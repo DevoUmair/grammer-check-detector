@@ -1,110 +1,135 @@
 from dataclasses import dataclass, field
 
+
 @dataclass
 class LinguisticKnowledge:
-    """Comprehensive linguistic knowledge base for grammar checking"""
+    """Extensive linguistic knowledge base for context-aware grammar correction."""
 
-    # Nouns that usually do not require an article
+    # ============================================================
+    # 1. ZERO ARTICLE NOUNS (Used without 'a/an/the')
+    # ============================================================
     ZERO_ARTICLE_NOUNS: set = field(default_factory=lambda: {
-        'school', 'college', 'university', 'church', 'hospital', 'prison', 'court',
-        'breakfast', 'lunch', 'dinner', 'brunch', 'supper',
-        'home', 'work', 'bed', 'town', 'sea',
-        'football', 'cricket', 'tennis', 'basketball', 'chess', 'soccer',
-        'mathematics', 'physics', 'chemistry', 'history', 'english',
-        'music', 'art', 'literature', 'poetry',
+        'school', 'college', 'university', 'church', 'hospital', 'prison', 'court', 'bed',
+        'home', 'work', 'town', 'sea', 'camp', 'class', 'market', 'office', 'parliament',
+        'breakfast', 'lunch', 'dinner', 'supper', 'brunch',
+        'football', 'cricket', 'tennis', 'basketball', 'soccer', 'chess', 'golf', 'rugby',
+        'mathematics', 'physics', 'chemistry', 'biology', 'history', 'geography', 'economics',
+        'english', 'french', 'art', 'music', 'literature', 'philosophy', 'poetry', 'politics'
     })
 
-    # Uncountable nouns
+    # ============================================================
+    # 2. UNCOUNTABLE NOUNS
+    # ============================================================
     UNCOUNTABLE: set = field(default_factory=lambda: {
-        'information', 'advice', 'knowledge', 'research', 'evidence', 'progress',
+        'advice', 'information', 'knowledge', 'research', 'evidence', 'progress',
         'furniture', 'equipment', 'luggage', 'baggage', 'homework', 'housework',
-        'weather', 'traffic', 'news', 'software', 'hardware',
-        'water', 'milk', 'coffee', 'tea', 'rice', 'bread', 'butter', 'cheese',
-        'money', 'cash', 'gold', 'silver',
-        'happiness', 'anger', 'love', 'hate', 'fear', 'courage',
+        'weather', 'traffic', 'news', 'software', 'hardware', 'work',
+        'water', 'milk', 'coffee', 'tea', 'juice', 'rice', 'bread', 'butter', 'sugar',
+        'money', 'cash', 'gold', 'silver', 'oil', 'electricity', 'energy', 'gas',
+        'happiness', 'sadness', 'anger', 'love', 'hate', 'fear', 'peace', 'freedom', 'health',
+        'education', 'transportation', 'employment', 'poverty', 'wealth'
     })
 
-    # Preposition collocations for verbs and adjectives
+    # ============================================================
+    # 3. DEFINITE ARTICLE NOUNS (Usually require 'the')
+    # ============================================================
+    DEFINITE_ARTICLE_NOUNS: set = field(default_factory=lambda: {
+        'sun', 'moon', 'earth', 'sky', 'internet', 'president', 'prime minister', 'world',
+        'government', 'universe', 'climate', 'economy', 'police', 'army', 'media'
+    })
+
+    # ============================================================
+    # 4. PREPOSITION COLLOCATIONS
+    # ============================================================
     PREPOSITION_COLLOCATIONS: dict = field(default_factory=lambda: {
-        'go': {'to': ['school', 'college', 'university', 'work', 'bed', 'market', 'cinema', 'hospital']},
-        'arrive': {'at': ['school', 'work', 'home', 'station'], 'in': ['city', 'country', 'town']},
-        'participate': {'in': ['activity', 'event', 'competition', 'discussion']},
-        'consist': {'of': ['parts', 'elements', 'components']},
-        'depend': {'on': ['factors', 'circumstances', 'conditions']},
-        'listen': {'to': ['music', 'radio', 'advice', 'teacher']},
-        'look': {'at': ['picture', 'screen', 'board'], 'for': ['job', 'house', 'solution']},
-        'wait': {'for': ['bus', 'train', 'person', 'reply']},
-        'search': {'for': ['information', 'answer', 'solution']},
-        'apologize': {'for': ['mistake', 'delay', 'inconvenience']},
-        'congratulate': {'on': ['success', 'achievement', 'victory']},
-        'good': {'at': ['playing', 'singing', 'dancing', 'math', 'sports']},
-        'bad': {'at': ['playing', 'singing', 'dancing', 'math', 'sports']},
-        'interested': {'in': ['subject', 'topic', 'field', 'activity']},
-        'responsible': {'for': ['task', 'project', 'work', 'mistake']},
-        'afraid': {'of': ['dark', 'heights', 'spiders', 'failure']},
-        'proud': {'of': ['achievement', 'success', 'child', 'work']},
-        'capable': {'of': ['doing', 'achieving', 'handling']},
-        'familiar': {'with': ['concept', 'system', 'process', 'area']},
-        'different': {'from': ['other', 'previous', 'original']},
-        'similar': {'to': ['other', 'previous', 'original']},
+        'go': {'to': ['school', 'work', 'bed', 'church', 'market', 'hospital', 'gym', 'university']},
+        'arrive': {'at': ['station', 'airport', 'school', 'work'], 'in': ['city', 'country', 'town']},
+        'participate': {'in': ['event', 'meeting', 'competition', 'conference']},
+        'depend': {'on': ['weather', 'situation', 'context', 'decision']},
+        'listen': {'to': ['music', 'teacher', 'advice', 'radio']},
+        'look': {'at': ['picture', 'screen'], 'for': ['solution', 'key', 'job'], 'after': ['child', 'patient']},
+        'wait': {'for': ['bus', 'train', 'reply', 'signal']},
+        'search': {'for': ['information', 'answer', 'meaning']},
+        'apologize': {'for': ['delay', 'mistake', 'rudeness']},
+        'believe': {'in': ['truth', 'god', 'system', 'yourself']},
+        'agree': {'with': ['idea', 'statement', 'person'], 'to': ['plan', 'proposal']},
+        'interested': {'in': ['art', 'science', 'reading', 'technology']},
+        'responsible': {'for': ['project', 'task', 'accident', 'team']},
+        'afraid': {'of': ['dark', 'snakes', 'heights']},
+        'proud': {'of': ['achievement', 'success', 'child']},
+        'capable': {'of': ['doing', 'solving', 'managing']},
+        'different': {'from': ['others', 'previous', 'original']},
+        'similar': {'to': ['this', 'that', 'other']}
     })
 
-    # Irregular verbs
+    # ============================================================
+    # 5. IRREGULAR VERBS (Comprehensive List)
+    # ============================================================
     IRREGULAR_VERBS: dict = field(default_factory=lambda: {
-        'be': {'past': 'was/were', 'past_participle': 'been', 'present_3sg': 'is'},
-        'have': {'past': 'had', 'past_participle': 'had', 'present_3sg': 'has'},
-        'do': {'past': 'did', 'past_participle': 'done', 'present_3sg': 'does'},
-        'go': {'past': 'went', 'past_participle': 'gone', 'present_3sg': 'goes'},
-        'see': {'past': 'saw', 'past_participle': 'seen', 'present_3sg': 'sees'},
-        'eat': {'past': 'ate', 'past_participle': 'eaten', 'present_3sg': 'eats'},
-        'take': {'past': 'took', 'past_participle': 'taken', 'present_3sg': 'takes'},
-        'give': {'past': 'gave', 'past_participle': 'given', 'present_3sg': 'gives'},
-        'make': {'past': 'made', 'past_participle': 'made', 'present_3sg': 'makes'},
-        'know': {'past': 'knew', 'past_participle': 'known', 'present_3sg': 'knows'},
-        'get': {'past': 'got', 'past_participle': 'got/gotten', 'present_3sg': 'gets'},
-        'come': {'past': 'came', 'past_participle': 'come', 'present_3sg': 'comes'},
-        'think': {'past': 'thought', 'past_participle': 'thought', 'present_3sg': 'thinks'},
-        'say': {'past': 'said', 'past_participle': 'said', 'present_3sg': 'says'},
-        'find': {'past': 'found', 'past_participle': 'found', 'present_3sg': 'finds'},
-        'write': {'past': 'wrote', 'past_participle': 'written', 'present_3sg': 'writes'},
-        'buy': {'past': 'bought', 'past_participle': 'bought', 'present_3sg': 'buys'},
-        'run': {'past': 'ran', 'past_participle': 'run', 'present_3sg': 'runs'},
-        'bring': {'past': 'brought', 'past_participle': 'brought', 'present_3sg': 'brings'},
-        'teach': {'past': 'taught', 'past_participle': 'taught', 'present_3sg': 'teaches'},
-        'catch': {'past': 'caught', 'past_participle': 'caught', 'present_3sg': 'catches'},
-        'send': {'past': 'sent', 'past_participle': 'sent', 'present_3sg': 'sends'},
+        'be': {'past': 'was/were', 'pp': 'been', 's': 'is'},
+        'have': {'past': 'had', 'pp': 'had', 's': 'has'},
+        'do': {'past': 'did', 'pp': 'done', 's': 'does'},
+        'go': {'past': 'went', 'pp': 'gone', 's': 'goes'},
+        'see': {'past': 'saw', 'pp': 'seen', 's': 'sees'},
+        'take': {'past': 'took', 'pp': 'taken', 's': 'takes'},
+        'eat': {'past': 'ate', 'pp': 'eaten', 's': 'eats'},
+        'come': {'past': 'came', 'pp': 'come', 's': 'comes'},
+        'get': {'past': 'got', 'pp': 'got/gotten', 's': 'gets'},
+        'make': {'past': 'made', 'pp': 'made', 's': 'makes'},
+        'write': {'past': 'wrote', 'pp': 'written', 's': 'writes'},
+        'speak': {'past': 'spoke', 'pp': 'spoken', 's': 'speaks'},
+        'break': {'past': 'broke', 'pp': 'broken', 's': 'breaks'},
+        'fly': {'past': 'flew', 'pp': 'flown', 's': 'flies'},
+        'begin': {'past': 'began', 'pp': 'begun', 's': 'begins'},
+        'run': {'past': 'ran', 'pp': 'run', 's': 'runs'},
+        'buy': {'past': 'bought', 'pp': 'bought', 's': 'buys'},
+        'bring': {'past': 'brought', 'pp': 'brought', 's': 'brings'},
+        'teach': {'past': 'taught', 'pp': 'taught', 's': 'teaches'},
+        'feel': {'past': 'felt', 'pp': 'felt', 's': 'feels'},
+        'find': {'past': 'found', 'pp': 'found', 's': 'finds'},
+        'think': {'past': 'thought', 'pp': 'thought', 's': 'thinks'},
+        'sell': {'past': 'sold', 'pp': 'sold', 's': 'sells'},
+        'tell': {'past': 'told', 'pp': 'told', 's': 'tells'},
+        'sit': {'past': 'sat', 'pp': 'sat', 's': 'sits'},
+        'stand': {'past': 'stood', 'pp': 'stood', 's': 'stands'},
+        'sleep': {'past': 'slept', 'pp': 'slept', 's': 'sleeps'},
+        'choose': {'past': 'chose', 'pp': 'chosen', 's': 'chooses'},
     })
 
-    # Regular verb suffixes for 3rd person singular
-    REGULAR_VERB_SUFFIXES: dict = field(default_factory=lambda: {
-        'present_3sg': 's'
-    })
-
-    # Auxiliary verbs
+    # ============================================================
+    # 6. AUXILIARY AND MODAL VERBS
+    # ============================================================
     AUXILIARY_VERBS: dict = field(default_factory=lambda: {
         'be': {'present': ['am', 'is', 'are'], 'past': ['was', 'were']},
-        'have': {'present': ['has', 'have'], 'past': ['had']},
-        'do': {'present': ['does', 'do'], 'past': ['did']}
+        'have': {'present': ['have', 'has'], 'past': ['had']},
+        'do': {'present': ['do', 'does'], 'past': ['did']},
+        'modals': ['will', 'would', 'can', 'could', 'shall', 'should', 'may', 'might', 'must']
     })
 
-    # Temporal markers
+    # ============================================================
+    # 7. TENSE MARKERS
+    # ============================================================
     PAST_MARKERS: set = field(default_factory=lambda: {
-        'yesterday', 'ago', 'last', 'previous', 'earlier', 'before', 'once', 'already', 'recently', 'earlier today'
+        'yesterday', 'ago', 'last', 'previous', 'earlier', 'before', 'once', 'already', 'recently'
     })
     PRESENT_MARKERS: set = field(default_factory=lambda: {
-        'now', 'currently', 'today', 'nowadays', 'presently', 'at the moment', 'this week', 'these days'
+        'now', 'currently', 'today', 'nowadays', 'these days', 'at present', 'at the moment'
     })
     FUTURE_MARKERS: set = field(default_factory=lambda: {
-        'tomorrow', 'next', 'soon', 'later', 'will', 'shall', 'going to', 'in a week', 'later today', 'soon after'
+        'tomorrow', 'next', 'soon', 'later', 'eventually', 'shortly', 'in future', 'in a while'
     })
 
-    # Frequency adverbs
+    # ============================================================
+    # 8. FREQUENCY ADVERBS
+    # ============================================================
     FREQUENCY_ADVERBS: set = field(default_factory=lambda: {
-        'always', 'usually', 'often', 'sometimes', 'rarely', 'never', 'seldom',
-        'frequently', 'occasionally', 'regularly', 'daily', 'weekly', 'monthly'
+        'always', 'usually', 'often', 'frequently', 'sometimes', 'rarely', 'seldom', 'never',
+        'occasionally', 'hardly ever', 'regularly', 'constantly', 'daily', 'weekly'
     })
 
-    # Confusion sets
+    # ============================================================
+    # 9. CONFUSION SETS
+    # ============================================================
     CONFUSION_SETS: dict = field(default_factory=lambda: {
         'their': ['there', "they're"],
         'there': ['their', "they're"],
@@ -115,28 +140,51 @@ class LinguisticKnowledge:
         "it's": ['its'],
         'affect': ['effect'],
         'effect': ['affect'],
+        'accept': ['except'],
+        'advise': ['advice'],
+        'loose': ['lose'],
+        'then': ['than'],
+        'few': ['a few'],
+        'little': ['a little']
     })
 
-    # Definite article exceptions
-    DEFINITE_ARTICLE_NOUNS: set = field(default_factory=lambda: {
-        'sun', 'moon', 'earth', 'president', 'prime minister', 'internet'
+    # ============================================================
+    # 10. FUNCTION WORDS (Useful for POS and Syntax)
+    # ============================================================
+    DETERMINERS: set = field(default_factory=lambda: {
+        'a', 'an', 'the', 'this', 'that', 'these', 'those', 'my', 'your', 'his',
+        'her', 'its', 'our', 'their', 'some', 'any', 'no', 'each', 'every', 'either', 'neither'
     })
 
-    # Indefinite article exceptions (silent 'h')
-    INDEFINITE_ARTICLE_EXCEPTIONS: set = field(default_factory=lambda: {
-        'honest', 'hour', 'heir'
+    CONJUNCTIONS: set = field(default_factory=lambda: {
+        'and', 'but', 'or', 'so', 'yet', 'because', 'although', 'though', 'unless', 'while', 'whereas', 'since', 'before', 'after', 'until'
     })
 
-    # Adjective-preposition pairs
-    ADJECTIVE_PREPOSITIONS: dict = field(default_factory=lambda: {
-        'interested': 'in',
-        'afraid': 'of',
-        'responsible': 'for',
-        'similar': 'to',
-        'different': 'from',
-        'good': 'at',
-        'bad': 'at',
-        'proud': 'of',
-        'capable': 'of',
-        'familiar': 'with',
+    PREPOSITIONS: set = field(default_factory=lambda: {
+        'in', 'on', 'at', 'by', 'to', 'from', 'with', 'about', 'for', 'of', 'through', 'under', 'over',
+        'between', 'among', 'into', 'onto', 'across', 'beyond', 'during', 'without', 'within'
     })
+
+    # ============================================================
+    # 11. PRONOUNS
+    # ============================================================
+    PRONOUNS: dict = field(default_factory=lambda: {
+        'subject': ['I', 'you', 'he', 'she', 'it', 'we', 'they'],
+        'object': ['me', 'you', 'him', 'her', 'it', 'us', 'them'],
+        'possessive': ['my', 'your', 'his', 'her', 'its', 'our', 'their'],
+        'reflexive': ['myself', 'yourself', 'himself', 'herself', 'itself', 'ourselves', 'yourselves', 'themselves'],
+        'relative': ['who', 'whom', 'whose', 'which', 'that'],
+        'demonstrative': ['this', 'that', 'these', 'those']
+    })
+
+    # ============================================================
+    # 12. DEGREE ADVERBS
+    # ============================================================
+    DEGREE_ADVERBS: set = field(default_factory=lambda: {
+        'very', 'too', 'enough', 'quite', 'almost', 'nearly', 'barely', 'hardly', 'extremely', 'rather', 'so'
+    })
+
+
+# Example usage:
+# knowledge = LinguisticKnowledge()
+# print(knowledge.IRREGULAR_VERBS['go']['past'])  # Output: went
