@@ -4,13 +4,25 @@ class PrepositionDetector:
     def __init__(self):
         self.knowledge = LinguisticKnowledge()
 
-    def detect(self, sentence_tokens):
+    def detect(self, tokens, pos_tags, context):
         errors = []
-        for i, word in enumerate(sentence_tokens):
-            lw = word.lower()
-            for verb, prep_dict in self.knowledge.PREPOSITION_COLLOCATIONS.items():
-                if lw == verb and i+1 < len(sentence_tokens):
-                    next_word = sentence_tokens[i+1].lower()
-                    if next_word not in prep_dict:
-                        errors.append((i, f"Check preposition usage for '{verb}'"))
+        
+        for i, (token, pos) in enumerate(zip(tokens, pos_tags)):
+            lower_token = token.lower()
+            
+            # Check verb-preposition collocations
+            if lower_token in self.knowledge.PREPOSITION_COLLOCATIONS:
+                expected_preps = self.knowledge.PREPOSITION_COLLOCATIONS[lower_token]
+                
+                if i + 1 < len(tokens):
+                    next_token = tokens[i + 1].lower()
+                    if (next_token not in expected_preps and 
+                        pos_tags[i + 1] in ['ADP', 'PART']):  # ADP is preposition, PART is particle
+                        errors.append({
+                            'position': i,
+                            'message': f"Check preposition usage after '{token}'",
+                            'suggestion': f"Common prepositions for '{token}': {list(expected_preps.keys())}",
+                            'type': 'preposition'
+                        })
+        
         return errors
