@@ -1,3 +1,4 @@
+#preposition.py
 from grammar_checker.knowledge import LinguisticKnowledge
 
 class PrepositionDetector:
@@ -11,22 +12,84 @@ class PrepositionDetector:
             tokens = sentence_or_context or []
 
         errors = []
+        # common prepositions to detect existing (possibly incorrect) prepositions
+        common_preps = {'in', 'on', 'at', 'to', 'for', 'of', 'with', 'about', 'by', 'from', 'into', 'onto', 'over', 'under', 'between', 'among', 'through', 'during'}
+
         for i, word in enumerate(tokens):
             lw = word.lower()
+            # allow matching base verb forms: e.g., 'arrived' -> 'arrive'
+            verb_key = None
             if lw in self.knowledge.PREPOSITION_COLLOCATIONS:
-                prep_dict = self.knowledge.PREPOSITION_COLLOCATIONS[lw]
-                # look ahead for a preposition token within next 3 tokens
-                found_prep = None
-                found_prep_index = None
-                for j in range(i + 1, min(i + 4, len(tokens))):
-                    candidate = tokens[j].lower()
-                    if candidate in prep_dict:
-                        found_prep = candidate
-                        found_prep_index = j
-                        break
+                verb_key = lw
+            else:
+                # handle past tense forms: try removing 'ed' or just 'd' (arrived -> arrive)
+                if lw.endswith('ed'):
+                    cand = lw[:-2]
+                    cand2 = lw[:-1]
+                    if cand in self.knowledge.PREPOSITION_COLLOCATIONS:
+                        verb_key = cand
+                    elif cand2 in self.knowledge.PREPOSITION_COLLOCATIONS:
+                        verb_key = cand2
+                # handle 3rd-person singular: try both -s and -es removals
+                elif lw.endswith('s'):
+                    cand = lw[:-1]
+                    cand2 = lw[:-2]
+                    if cand in self.knowledge.PREPOSITION_COLLOCATIONS:
+                        verb_key = cand
+                    elif cand2 in self.knowledge.PREPOSITION_COLLOCATIONS:
+                        verb_key = cand2
 
-                if found_prep:
-                    # check the noun after preposition if available
+            if not verb_key:
+                continue
+
+            prep_dict = self.knowledge.PREPOSITION_COLLOCATIONS[verb_key]
+            allowed_preps = set(prep_dict.keys())
+
+            # look ahead for a preposition token within next 3 tokens
+            found_prep = None
+            found_prep_index = None
+            for j in range(i + 1, min(i + 4, len(tokens))):
+                candidate = tokens[j].lower()
+                if candidate in common_preps:
+                    found_prep = candidate
+                    found_prep_index = j
+                    break
+
+            if found_prep:
+                if found_prep not in allowed_preps:
+                    # wrong preposition used; try to pick the allowed preposition
+                    # that best fits the noun (if available)
+                    noun_index = found_prep_index + 1
+                    preferred = None
+                    if noun_index < len(tokens):
+                        noun = tokens[noun_index].lower()
+                        # try exact match or substring match against allowed nouns
+                        for p, nouns in prep_dict.items():
+                            if isinstance(nouns, list):
+                                for an in nouns:
+                                    if noun == an or an in noun or noun in an:
+                                        preferred = p
+                                        break
+                            if preferred:
+                                break
+
+                        if preferred:
+                            likely_prep = preferred
+                        else:
+                            if 'at' in allowed_preps:
+                                likely_prep = 'at'
+                            else:
+                                likely_prep = next(iter(allowed_preps)) if allowed_preps else None
+                    sugg = None
+                    if likely_prep:
+                        sugg = {'type': 'replace', 'index': found_prep_index, 'word': likely_prep}
+                    errors.append({
+                        'pos': found_prep_index,
+                        'message': f"Unexpected preposition '{tokens[found_prep_index]}' after '{word}'; expected: {', '.join(allowed_preps)}",
+                        'suggestion': sugg
+                    })
+                else:
+                    # correct preposition found: validate noun collocation if a list exists
                     noun_index = found_prep_index + 1
                     if noun_index < len(tokens):
                         noun = tokens[noun_index].lower()
@@ -46,12 +109,12 @@ class PrepositionDetector:
                                 'message': f"Unusual collocation: '{lw} {found_prep} {tokens[noun_index]}'",
                                 'suggestion': sugg
                             })
-                else:
-                    # suggest inserting the most likely preposition (first key)
-                    likely_prep = next(iter(prep_dict.keys()))
-                    errors.append({
-                        'pos': i,
-                        'message': f"Possible missing or unexpected preposition after '{word}'",
-                        'suggestion': {'type': 'insert', 'index': i+1, 'word': likely_prep}
-                    })
+            else:
+                # no preposition found in lookahead: suggest inserting the most likely preposition (first key)
+                likely_prep = next(iter(prep_dict.keys()))
+                errors.append({
+                    'pos': i,
+                    'message': f"Possible missing preposition after '{word}'",
+                    'suggestion': {'type': 'insert', 'index': i+1, 'word': likely_prep}
+                })
         return errors

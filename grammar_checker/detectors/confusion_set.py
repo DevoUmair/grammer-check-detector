@@ -1,3 +1,4 @@
+#confusion_set.py
 class ConfusionSetDetector:
     # Keep a small static list for quick checks; a richer map lives in knowledge.
     CONFUSION_SETS = [
