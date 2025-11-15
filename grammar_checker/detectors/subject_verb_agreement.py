@@ -1,5 +1,3 @@
-
-#subject_verb_agreement.py
 from grammar_checker.knowledge import LinguisticKnowledge
 
 class SubjectVerbAgreementDetector:
@@ -22,7 +20,6 @@ class SubjectVerbAgreementDetector:
             elif isinstance(v, list):
                 auxiliaries.update(v)
 
-        # 1) Pronoun-based (existing heuristic)
         for i, word in enumerate(tokens[:-1]):
             lw = word.lower()
             if lw in third_person_pronouns:
@@ -31,7 +28,6 @@ class SubjectVerbAgreementDetector:
                     cl = candidate.lower()
                     if cl in auxiliaries:
                         break
-                    # skip if candidate is clearly not a base form (past/participle/gerund)
                     if cl.endswith('ed') or cl.endswith('ing') or cl in ('is', 'are', 'was', 'were', 'has', 'have'):
                         break
 
@@ -55,13 +51,10 @@ class SubjectVerbAgreementDetector:
                         })
                     break
 
-        # 2) 'Each of the X have' -> 'has'
         for i, word in enumerate(tokens):
             if word.lower() == 'each':
-                # look for 'of' then a noun and a verb
                 for j in range(i + 1, min(i + 6, len(tokens))):
                     if tokens[j].lower() == 'of':
-                        # find verb after the phrase
                         for k in range(j + 1, min(len(tokens), j + 6)):
                             tok = tokens[k].lower()
                             if tok in ('have', 'are', 'were'):
@@ -74,16 +67,12 @@ class SubjectVerbAgreementDetector:
                                 break
                         break
 
-        # 3) 'X of Y are' pattern: subject before 'of' is the head noun
         for i, word in enumerate(tokens):
             if word.lower() == 'of' and i - 1 >= 0:
                 head = tokens[i - 1]
-                # crude plural detection: look at words after 'of' and the verb after the phrase
-                # find verb after the 'of' phrase
                 for j in range(i + 1, min(len(tokens), i + 6)):
                     tok = tokens[j].lower()
                     if tok in ('is', 'are', 'was', 'were', 'has', 'have'):
-                        # if head looks singular (doesn't end with 's') but verb is plural -> suggest singular
                         if not head.lower().endswith('s') and tok in ('are', 'have', 'were'):
                             replacement = 'is' if tok == 'are' else ('has' if tok == 'have' else 'was')
                             errors.append({

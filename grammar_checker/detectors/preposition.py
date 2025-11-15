@@ -12,17 +12,14 @@ class PrepositionDetector:
             tokens = sentence_or_context or []
 
         errors = []
-        # common prepositions to detect existing (possibly incorrect) prepositions
         common_preps = {'in', 'on', 'at', 'to', 'for', 'of', 'with', 'about', 'by', 'from', 'into', 'onto', 'over', 'under', 'between', 'among', 'through', 'during'}
 
         for i, word in enumerate(tokens):
             lw = word.lower()
-            # allow matching base verb forms: e.g., 'arrived' -> 'arrive'
             verb_key = None
             if lw in self.knowledge.PREPOSITION_COLLOCATIONS:
                 verb_key = lw
             else:
-                # handle past tense forms: try removing 'ed' or just 'd' (arrived -> arrive)
                 if lw.endswith('ed'):
                     cand = lw[:-2]
                     cand2 = lw[:-1]
@@ -30,7 +27,6 @@ class PrepositionDetector:
                         verb_key = cand
                     elif cand2 in self.knowledge.PREPOSITION_COLLOCATIONS:
                         verb_key = cand2
-                # handle 3rd-person singular: try both -s and -es removals
                 elif lw.endswith('s'):
                     cand = lw[:-1]
                     cand2 = lw[:-2]
@@ -45,7 +41,6 @@ class PrepositionDetector:
             prep_dict = self.knowledge.PREPOSITION_COLLOCATIONS[verb_key]
             allowed_preps = set(prep_dict.keys())
 
-            # look ahead for a preposition token within next 3 tokens
             found_prep = None
             found_prep_index = None
             for j in range(i + 1, min(i + 4, len(tokens))):
@@ -57,13 +52,10 @@ class PrepositionDetector:
 
             if found_prep:
                 if found_prep not in allowed_preps:
-                    # wrong preposition used; try to pick the allowed preposition
-                    # that best fits the noun (if available)
                     noun_index = found_prep_index + 1
                     preferred = None
                     if noun_index < len(tokens):
                         noun = tokens[noun_index].lower()
-                        # try exact match or substring match against allowed nouns
                         for p, nouns in prep_dict.items():
                             if isinstance(nouns, list):
                                 for an in nouns:
@@ -89,13 +81,11 @@ class PrepositionDetector:
                         'suggestion': sugg
                     })
                 else:
-                    # correct preposition found: validate noun collocation if a list exists
                     noun_index = found_prep_index + 1
                     if noun_index < len(tokens):
                         noun = tokens[noun_index].lower()
                         allowed_nouns = prep_dict.get(found_prep)
                         if isinstance(allowed_nouns, list) and allowed_nouns and noun not in allowed_nouns:
-                            # try to find an alternative preposition that fits this noun
                             replacement_prep = None
                             for p, nouns in prep_dict.items():
                                 if isinstance(nouns, list) and noun in nouns:
@@ -110,7 +100,6 @@ class PrepositionDetector:
                                 'suggestion': sugg
                             })
             else:
-                # no preposition found in lookahead: suggest inserting the most likely preposition (first key)
                 likely_prep = next(iter(prep_dict.keys()))
                 errors.append({
                     'pos': i,

@@ -1,4 +1,3 @@
-#tense_consistency.py
 from grammar_checker.knowledge import LinguisticKnowledge
 
 class TenseConsistencyDetector:
@@ -13,12 +12,11 @@ class TenseConsistencyDetector:
 
         errors = []
 
-        # gather simple present-like and past-like verb clues
         present_like = []
         past_like = []
         be_past = set(self.knowledge.AUXILIARY_VERBS.get('be', {}).get('past', []))
         have_past = set(self.knowledge.AUXILIARY_VERBS.get('have', {}).get('past', []))
-        # build list of known irregular past forms (strings)
+        
         irregular_pasts = set()
         for base, info in self.knowledge.IRREGULAR_VERBS.items():
             past = info.get('past')
@@ -27,7 +25,7 @@ class TenseConsistencyDetector:
 
         for idx, tok in enumerate(tokens):
             t = tok.lower()
-            # skip tokens that are known past auxiliaries
+            
             if t in be_past or t in have_past or t in irregular_pasts:
                 past_like.append(idx)
                 continue
@@ -36,16 +34,13 @@ class TenseConsistencyDetector:
             if t.endswith('ed'):
                 past_like.append(idx)
 
-        # If both present-like and past-like verbs exist in the sentence, flag a possible inconsistency.
+
         if present_like and past_like:
-            # try to suggest converting present to past where reasonable
             for p_idx in present_like:
                 tok = tokens[p_idx].lower()
-                # skip short function words that happen to end with 's'
                 if tok in getattr(self.knowledge, 'DETERMINERS', set()) or tok in getattr(self.knowledge, 'PREPOSITIONS', set()):
                     continue
 
-                # derive candidates for base by checking likely stem forms and matching irregulars
                 candidate_bases = []
                 if tok.endswith('ies'):
                     candidate_bases.append(tok[:-3] + 'y')
@@ -64,9 +59,7 @@ class TenseConsistencyDetector:
                         break
 
                 if not suggested:
-                    # regular rules
                     if tok.endswith('ies'):
-                        # e.g. 'studies' -> 'studied'
                         chosen_base = tok[:-3]
                         suggested = chosen_base + 'ied'
                     elif tok.endswith('es'):
@@ -83,7 +76,6 @@ class TenseConsistencyDetector:
                         'suggestion': {'type': 'replace', 'index': p_idx, 'word': suggested}
                     })
 
-        # Additionally: look for past temporal markers like 'yesterday' and auxiliaries like 'was' preceding present verbs
         past_markers = self.knowledge.PAST_MARKERS
         be_past = set(self.knowledge.AUXILIARY_VERBS.get('be', {}).get('past', []))
         for i, word in enumerate(tokens):
@@ -92,7 +84,6 @@ class TenseConsistencyDetector:
                 for j in range(i + 1, min(i + 7, len(tokens))):
                     tj = tokens[j].lower()
                     if tj.endswith('s') and not tj.endswith('ss'):
-                        # propose an irregular or regular past form
                         base = None
                         if tj.endswith('ies'):
                             base = tj[:-3] + 'y'
@@ -108,13 +99,12 @@ class TenseConsistencyDetector:
                             suggested = self.knowledge.IRREGULAR_VERBS[base].get('past')
                         else:
                             if tj.endswith('ies'):
-                                # 'studies' -> 'studied'
                                 suggested = base + 'ied'
                             elif tj.endswith('es'):
                                 suggested = base + 'ed'
                             elif tj.endswith('s'):
                                 suggested = base + 'ed'
-                        # avoid duplicate suggestions for the same token
+                                
                         if any(e.get('pos') == j for e in errors):
                             break
 

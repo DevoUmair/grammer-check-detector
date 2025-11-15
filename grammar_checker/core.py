@@ -17,8 +17,6 @@ class GrammarChecker:
     def check(self, sentence: str):
         context = self.context_analyzer.analyze(sentence)
 
-        # Collect structured error objects from detectors. Each error is a dict:
-        # {"pos": int, "message": str, "suggestion": {"type":..., ...} | None}
         errors = []
         errors.extend(self.article_detector.detect(context))
         errors.extend(self.confusion_detector.detect(context))
@@ -26,7 +24,6 @@ class GrammarChecker:
         errors.extend(self.subject_verb_detector.detect(context))
         errors.extend(self.tense_detector.detect(context))
 
-        # Collect suggestions and apply them to produce a corrected sentence.
         suggestions = [e.get('suggestion') for e in errors if e.get('suggestion')]
         corrected_tokens = self._apply_suggestions(context.get('tokens', []), suggestions)
         corrected_sentence = ' '.join(corrected_tokens)
@@ -50,7 +47,7 @@ class GrammarChecker:
 
         tokens_out = list(tokens)
         offset = 0
-        # Apply in order of ascending index to keep behavior predictable
+
         def keyfn(s):
             return (s.get('index', 0), 0 if s.get('type') == 'remove' else 1)
 

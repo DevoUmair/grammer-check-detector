@@ -1,6 +1,4 @@
-#confusion_set.py
 class ConfusionSetDetector:
-    # Keep a small static list for quick checks; a richer map lives in knowledge.
     CONFUSION_SETS = [
         ('their', 'there', "they're"),
         ('your', "you're"),
@@ -21,7 +19,6 @@ class ConfusionSetDetector:
             lw = word.lower()
             for group in self.CONFUSION_SETS:
                 if lw in group:
-                    # suggest the first alternative as a minimal correction
                     alternatives = [g for g in group if g != lw]
                     suggestion_word = alternatives[0] if alternatives else None
                     sugg = None
