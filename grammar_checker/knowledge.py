@@ -9,43 +9,207 @@ class LinguisticKnowledge:
     # 1. ZERO ARTICLE NOUNS (Used without 'a/an/the' in certain contexts)
     # ============================================================
     ZERO_ARTICLE_NOUNS: set = field(default_factory=lambda: {
-        # Institutions (general reference)
-        'school', 'college', 'university', 'church', 'hospital', 'prison', 'court', 'jail',
-        'camp', 'class', 'office', 'parliament', 'congress', 'senate', 'work',
+        # ==================== INSTITUTIONS & PLACES ====================
+        # Educational institutions
+        'school', 'college', 'university', 'kindergarten', 'preschool', 'nursery', 
+        'academy', 'institute', 'campus', 'class', 'lecture', 'seminar', 'workshop',
         
-        # Location / Abstract concepts
-        'home', 'town', 'sea', 'nature', 'space', 'society', 'heaven', 'hell',
-        'life', 'death', 'paradise', 'purgatory', 'nirvana',
-
-        # Meals
+        # Religious institutions
+        'church', 'mosque', 'temple', 'synagogue', 'cathedral', 'chapel', 'shrine',
+        'monastery', 'abbey', 'pagoda',
+        
+        # Medical institutions
+        'hospital', 'clinic', 'surgery', 'infirmary', 'dispensary', 'asylum',
+        'sanatorium', 'health center', 'medical center',
+        
+        # Legal & Government institutions
+        'court', 'jail', 'prison', 'parliament', 'congress', 'senate', 'assembly',
+        'legislature', 'council', 'committee', 'cabinet', 'ministry', 'embassy',
+        'police station', 'fire station', 'post office', 'town hall',
+        
+        # Work & Business places
+        'work', 'office', 'factory', 'warehouse', 'studio', 'laboratory', 'workshop',
+        'headquarters', 'branch', 'outlet', 'store', 'shop', 'market',
+        
+        # Entertainment & Cultural places
+        'cinema', 'theater', 'opera', 'ballet', 'museum', 'gallery', 'library',
+        'stadium', 'arena', 'gym', 'pool', 'park', 'zoo', 'circus',
+        
+        # ==================== MEALS & FOOD ====================
         'breakfast', 'lunch', 'dinner', 'supper', 'brunch', 'tea', 'coffee',
-
-        # Sports and games
-        'football', 'cricket', 'tennis', 'basketball', 'soccer', 'chess', 'golf', 'rugby',
-        'baseball', 'hockey', 'volleyball', 'badminton', 'boxing', 'wrestling', 'poker',
-        'bridge', 'monopoly', 'scrabble',
-
-        # Subjects / Fields of study
-        'mathematics', 'math', 'physics', 'chemistry', 'biology', 'history', 'geography', 
-        'economics', 'english', 'french', 'spanish', 'german', 'art', 'music', 'literature', 
-        'philosophy', 'poetry', 'politics', 'linguistics', 'psychology', 'sociology', 
-        'engineering', 'medicine', 'law', 'business', 'accounting', 'statistics',
-
-        # Time expressions
-        'night', 'day', 'noon', 'midnight', 'dawn', 'dusk', 'sunrise', 'sunset',
-        'morning', 'afternoon', 'evening', 'twilight',
-
-        # Transportation modes
-        'bus', 'train', 'plane', 'car', 'bicycle', 'boat', 'ship', 'subway', 'metro',
-        'taxi', 'ferry', 'tram',
-
-        # Diseases and conditions
-        'cancer', 'diabetes', 'flu', 'malaria', 'cholera', 'pneumonia', 'covid',
+        'appetizer', 'dessert', 'snack', 'supper', 'banquet', 'feast', 'picnic',
+        'barbecue', 'buffet', 'reception', 'banquet', 'meal', 'food', 'drink',
         
-        # Other categories
-        'bed', 'market', 'court', 'war', 'peace', 'love', 'hatred'
+        # ==================== SPORTS & GAMES ====================
+        # Team sports
+        'football', 'soccer', 'cricket', 'rugby', 'baseball', 'basketball', 'hockey',
+        'volleyball', 'handball', 'water polo', 'netball',
+        
+        # Individual sports
+        'tennis', 'golf', 'boxing', 'wrestling', 'judo', 'karate', 'fencing',
+        'archery', 'shooting', 'swimming', 'running', 'jumping', 'cycling',
+        
+        # Winter sports
+        'skiing', 'snowboarding', 'skating', 'curling', 'ice hockey',
+        
+        # Games & activities
+        'chess', 'poker', 'bridge', 'monopoly', 'scrabble', 'bingo', 'darts',
+        'billiards', 'bowling', 'dancing', 'singing', 'acting', 'painting',
+        
+        # ==================== ACADEMIC SUBJECTS ====================
+        # Sciences
+        'mathematics', 'math', 'physics', 'chemistry', 'biology', 'geology',
+        'astronomy', 'meteorology', 'oceanography', 'botany', 'zoology',
+        'microbiology', 'genetics', 'ecology',
+        
+        # Social sciences
+        'economics', 'psychology', 'sociology', 'anthropology', 'archaeology',
+        'political science', 'international relations', 'development studies',
+        
+        # Humanities
+        'history', 'geography', 'philosophy', 'literature', 'poetry', 'linguistics',
+        'theology', 'religious studies', 'classics', 'archaeology',
+        
+        # Languages
+        'english', 'french', 'spanish', 'german', 'italian', 'portuguese',
+        'russian', 'chinese', 'japanese', 'arabic', 'hindi', 'sanskrit',
+        
+        # Arts & creative subjects
+        'art', 'music', 'drama', 'theater', 'dance', 'film', 'photography',
+        'architecture', 'design', 'fashion', 'culinary arts',
+        
+        # Professional subjects
+        'medicine', 'law', 'business', 'accounting', 'engineering', 'nursing',
+        'pharmacy', 'dentistry', 'veterinary science', 'agriculture',
+        
+        # ==================== TIME & SEASONS ====================
+        # Times of day
+        'dawn', 'sunrise', 'morning', 'noon', 'afternoon', 'evening', 'dusk',
+        'sunset', 'twilight', 'night', 'midnight', 'daybreak', 'nightfall',
+        
+        # Days & periods
+        'day', 'night', 'week', 'month', 'year', 'century', 'millennium',
+        'spring', 'summer', 'autumn', 'fall', 'winter', 'season',
+        
+        # ==================== TRANSPORTATION ====================
+        # Public transport
+        'bus', 'train', 'subway', 'metro', 'tram', 'ferry', 'taxi', 'cab',
+        'airplane', 'plane', 'helicopter', 'ship', 'boat', 'yacht',
+        
+        # Personal transport
+        'car', 'bicycle', 'bike', 'motorcycle', 'scooter', 'rickshaw',
+        'walking', 'running', 'cycling', 'driving', 'flying',
+        
+        # ==================== HEALTH & MEDICINE ====================
+        'cancer', 'diabetes', 'flu', 'malaria', 'cholera', 'pneumonia', 'covid',
+        'measles', 'smallpox', 'tuberculosis', 'asthma', 'arthritis', 'allergy',
+        'headache', 'fever', 'cold', 'cough', 'pain', 'stress', 'anxiety',
+        'depression', 'health', 'fitness', 'exercise', 'yoga', 'meditation',
+        
+        # ==================== NATURE & ENVIRONMENT ====================
+        'nature', 'space', 'earth', 'sky', 'sea', 'ocean', 'river', 'lake',
+        'mountain', 'forest', 'jungle', 'desert', 'beach', 'island',
+        'weather', 'climate', 'rain', 'snow', 'wind', 'sunshine', 'thunder',
+        'lightning', 'gravity', 'magnetism', 'electricity',
+        
+        # ==================== ABSTRACT CONCEPTS ====================
+        'life', 'death', 'love', 'hatred', 'peace', 'war', 'justice', 'freedom',
+        'democracy', 'capitalism', 'socialism', 'communism', 'religion',
+        'science', 'art', 'beauty', 'truth', 'knowledge', 'wisdom', 'ignorance',
+        'happiness', 'sadness', 'anger', 'fear', 'courage', 'hope', 'despair',
+        'time', 'space', 'energy', 'matter', 'reality', 'fantasy', 'dream',
+        'nightmare', 'consciousness', 'subconscious', 'memory', 'imagination',
+        
+        # ==================== DAILY ACTIVITIES ====================
+        'work', 'sleep', 'rest', 'play', 'study', 'reading', 'writing',
+        'cooking', 'cleaning', 'shopping', 'banking', 'traveling',
+        
+        # ==================== SPECIAL CATEGORIES ====================
+        'bed', 'home', 'town', 'society', 'heaven', 'hell', 'paradise',
+        'purgatory', 'nirvana', 'valhalla', 'utopia', 'market', 'court',
+        
+        # ==================== MODERN CONCEPTS ====================
+        'internet', 'email', 'social media', 'streaming', 'gaming',
+        'programming', 'coding', 'design', 'marketing', 'advertising',
+        
+        # ==================== WEATHER PHENOMENA ====================
+        'rain', 'snow', 'hail', 'sleet', 'fog', 'mist', 'dew', 'frost',
+        'humidity', 'pressure', 'temperature', 'climate',
+        
+        # ==================== BODY & HEALTH ====================
+        'exercise', 'yoga', 'meditation', 'therapy', 'treatment',
+        'recovery', 'rehabilitation', 'fitness', 'wellness',
+        
+        # ==================== EDUCATION & LEARNING ====================
+        'learning', 'teaching', 'training', 'coaching', 'mentoring',
+        'research', 'study', 'practice', 'revision',
+        
+        # ==================== ENTERTAINMENT & LEISURE ====================
+        'entertainment', 'leisure', 'recreation', 'amusement', 'fun',
+        'pleasure', 'enjoyment', 'relaxation', 'vacation', 'holiday',
+        
+        # ==================== TECHNOLOGY & DIGITAL ====================
+        'computing', 'programming', 'coding', 'design', 'development',
+        'engineering', 'analysis', 'testing', 'debugging',
+        
+        # ==================== BUSINESS & FINANCE ====================
+        'business', 'commerce', 'trade', 'finance', 'banking', 'investment',
+        'marketing', 'advertising', 'management', 'administration',
+        
+        # ==================== LEGAL & GOVERNMENT ====================
+        'law', 'justice', 'government', 'politics', 'diplomacy',
+        'administration', 'bureaucracy', 'legislation',
+        
+        # ==================== EMOTIONS & STATES ====================
+        'happiness', 'sadness', 'anger', 'fear', 'surprise', 'disgust',
+        'joy', 'sorrow', 'grief', 'ecstasy', 'bliss', 'misery',
+        'confidence', 'doubt', 'certainty', 'uncertainty',
+        
+        # ==================== SOCIAL CONCEPTS ====================
+        'friendship', 'love', 'marriage', 'family', 'community', 'society',
+        'culture', 'tradition', 'custom', 'heritage', 'civilization',
+        
+        # ==================== PHILOSOPHICAL CONCEPTS ====================
+        'philosophy', 'ethics', 'morality', 'virtue', 'vice', 'good', 'evil',
+        'right', 'wrong', 'truth', 'falsehood', 'reality', 'illusion',
+        
+        # ==================== RELIGIOUS CONCEPTS ====================
+        'religion', 'faith', 'belief', 'worship', 'prayer', 'meditation',
+        'salvation', 'redemption', 'sin', 'virtue', 'heaven', 'hell',
+        
+        # ==================== ACCOMMODATION & LIVING ====================
+        'accommodation', 'housing', 'shelter', 'residence', 'dwelling',
+        'lodging', 'boarding', 'renting', 'leasing',
+        
+        # ==================== COMMUNICATION ====================
+        'communication', 'conversation', 'discussion', 'debate', 'argument',
+        'negotiation', 'persuasion', 'explanation', 'description',
+        
+        # ==================== MOVEMENT & TRAVEL ====================
+        'travel', 'journey', 'voyage', 'expedition', 'tour', 'trip',
+        'excursion', 'pilgrimage', 'migration', 'immigration', 'emigration',
+        
+        # ==================== CONFLICT & PEACE ====================
+        'war', 'peace', 'conflict', 'struggle', 'battle', 'fight', 'combat',
+        'violence', 'aggression', 'defense', 'protection', 'security',
+        
+        # ==================== CREATION & DESTRUCTION ====================
+        'creation', 'destruction', 'construction', 'demolition',
+        'production', 'manufacture', 'assembly', 'disassembly',
+        
+        # ==================== KNOWLEDGE & INFORMATION ====================
+        'knowledge', 'information', 'data', 'wisdom', 'intelligence',
+        'understanding', 'comprehension', 'awareness', 'consciousness',
+        
+        # ==================== ECONOMIC CONCEPTS ====================
+        'economy', 'market', 'trade', 'commerce', 'industry', 'business',
+        'employment', 'unemployment', 'inflation', 'recession', 'growth',
+        
+        # ==================== ENVIRONMENTAL CONCEPTS ====================
+        'environment', 'ecology', 'conservation', 'preservation',
+        'pollution', 'conservation', 'sustainability', 'biodiversity',
     })
-
+    
     # ============================================================
     # 2. UNCOUNTABLE NOUNS
     # ============================================================
@@ -116,100 +280,309 @@ class LinguisticKnowledge:
     })
 
     # ============================================================
-    # 4. PREPOSITION COLLOCATIONS (Expanded)
+    # 4. ENHANCED PREPOSITION COLLOCATIONS
     # ============================================================
     PREPOSITION_COLLOCATIONS: dict = field(default_factory=lambda: {
-        # Verbs with prepositions
-        'go': {'to': ['school', 'work', 'bed', 'church', 'market', 'hospital', 'gym', 'university', 'party'],
-               'for': ['walk', 'run', 'swim', 'drive'],
-               'on': ['holiday', 'vacation', 'trip', 'journey']},
+        # VERBS WITH PREPOSITIONS (Expanded)
+        'go': {
+            'to': ['school', 'work', 'bed', 'church', 'market', 'hospital', 'gym', 'university', 'party', 'concert', 'meeting', 'restaurant'],
+            'for': ['walk', 'run', 'swim', 'drive', 'meal', 'drink', 'hike', 'ride'],
+            'on': ['holiday', 'vacation', 'trip', 'journey', 'cruise', 'adventure', 'date'],
+            'through': ['process', 'procedure', 'difficulties', 'trouble'],
+            'without': ['food', 'water', 'sleep', 'permission', 'help']
+        },
         
-        'arrive': {'at': ['station', 'airport', 'school', 'work', 'hotel', 'office'],
-                   'in': ['city', 'country', 'town', 'village', 'room']},
+        'arrive': {
+            'at': ['station', 'airport', 'school', 'work', 'hotel', 'office', 'venue', 'destination', 'meeting point'],
+            'in': ['city', 'country', 'town', 'village', 'room', 'building', 'area', 'region'],
+            'on': ['time', 'schedule', 'platform', 'scene']
+        },
         
-        'participate': {'in': ['event', 'meeting', 'competition', 'conference', 'discussion']},
+        'participate': {
+            'in': ['event', 'meeting', 'competition', 'conference', 'discussion', 'program', 'activity', 'survey', 'research']
+        },
         
-        'depend': {'on': ['weather', 'situation', 'context', 'decision', 'person', 'circumstances']},
+        'depend': {
+            'on': ['weather', 'situation', 'context', 'decision', 'person', 'circumstances', 'factors', 'conditions', 'availability'],
+            'upon': ['request', 'approval', 'circumstances']
+        },
         
-        'rely': {'on': ['someone', 'something', 'information', 'support', 'help']},
+        'rely': {
+            'on': ['someone', 'something', 'information', 'support', 'help', 'data', 'expertise', 'technology', 'system']
+        },
         
-        'listen': {'to': ['music', 'teacher', 'advice', 'radio', 'podcast', 'lecture']},
+        'listen': {
+            'to': ['music', 'teacher', 'advice', 'radio', 'podcast', 'lecture', 'instructions', 'news', 'story', 'recording']
+        },
         
-        'look': {'at': ['picture', 'screen', 'person', 'book', 'document'],
-                 'for': ['solution', 'key', 'job', 'answer', 'information'],
-                 'after': ['child', 'patient', 'pet', 'house', 'garden'],
-                 'forward to': ['meeting', 'event', 'holiday']},
+        'look': {
+            'at': ['picture', 'screen', 'person', 'book', 'document', 'photo', 'map', 'statistics', 'results'],
+            'for': ['solution', 'key', 'job', 'answer', 'information', 'opportunity', 'way', 'clues', 'evidence'],
+            'after': ['child', 'patient', 'pet', 'house', 'garden', 'elderly', 'belongings', 'business'],
+            'forward to': ['meeting', 'event', 'holiday', 'weekend', 'celebration', 'vacation', 'results'],
+            'into': ['matter', 'issue', 'problem', 'complaint', 'possibility', 'opportunity'],
+            'through': ['window', 'documents', 'records', 'proposal', 'contract']
+        },
         
-        'wait': {'for': ['bus', 'train', 'reply', 'signal', 'person', 'results']},
+        'wait': {
+            'for': ['bus', 'train', 'reply', 'signal', 'person', 'results', 'approval', 'decision', 'opportunity']
+        },
         
-        'search': {'for': ['information', 'answer', 'meaning', 'keys', 'truth']},
+        'search': {
+            'for': ['information', 'answer', 'meaning', 'keys', 'truth', 'solution', 'evidence', 'clues', 'opportunities']
+        },
         
-        'apologize': {'for': ['delay', 'mistake', 'rudeness', 'behavior'],
-                      'to': ['person', 'teacher', 'friend']},
+        'apologize': {
+            'for': ['delay', 'mistake', 'rudeness', 'behavior', 'inconvenience', 'error', 'misunderstanding'],
+            'to': ['person', 'teacher', 'friend', 'colleague', 'customer', 'audience']
+        },
         
-        'believe': {'in': ['truth', 'god', 'system', 'yourself', 'justice']},
+        'believe': {
+            'in': ['truth', 'god', 'system', 'yourself', 'justice', 'equality', 'fairness', 'miracles', 'destiny']
+        },
         
-        'agree': {'with': ['idea', 'statement', 'person', 'opinion'],
-                  'to': ['plan', 'proposal', 'suggestion', 'terms'],
-                  'on': ['price', 'terms', 'date', 'plan']},
+        'agree': {
+            'with': ['idea', 'statement', 'person', 'opinion', 'perspective', 'viewpoint', 'assessment'],
+            'to': ['plan', 'proposal', 'suggestion', 'terms', 'conditions', 'arrangement', 'compromise'],
+            'on': ['price', 'terms', 'date', 'plan', 'strategy', 'approach', 'solution']
+        },
         
-        'complain': {'about': ['service', 'food', 'weather', 'price', 'quality'],
-                     'to': ['manager', 'person', 'authority']},
+        'complain': {
+            'about': ['service', 'food', 'weather', 'price', 'quality', 'noise', 'delay', 'treatment', 'performance'],
+            'to': ['manager', 'person', 'authority', 'supervisor', 'customer service', 'administration']
+        },
         
-        'talk': {'to': ['person', 'friend', 'teacher'],
-                 'with': ['person', 'colleague', 'expert'],
-                 'about': ['topic', 'problem', 'issue', 'subject']},
+        'talk': {
+            'to': ['person', 'friend', 'teacher', 'expert', 'counselor', 'manager'],
+            'with': ['person', 'colleague', 'expert', 'partner', 'team', 'family'],
+            'about': ['topic', 'problem', 'issue', 'subject', 'future', 'plans', 'feelings', 'experiences']
+        },
         
-        'think': {'about': ['problem', 'future', 'idea', 'solution'],
-                  'of': ['idea', 'person', 'solution', 'answer']},
+        'think': {
+            'about': ['problem', 'future', 'idea', 'solution', 'consequences', 'possibilities', 'options'],
+            'of': ['idea', 'person', 'solution', 'answer', 'way', 'method', 'approach'],
+            'through': ['problem', 'situation', 'decision', 'consequences', 'implications']
+        },
         
-        'worry': {'about': ['exam', 'money', 'future', 'health', 'safety']},
+        'worry': {
+            'about': ['exam', 'money', 'future', 'health', 'safety', 'family', 'career', 'results', 'performance']
+        },
         
-        'accuse': {'of': ['crime', 'theft', 'lying', 'cheating', 'murder']},
+        'accuse': {
+            'of': ['crime', 'theft', 'lying', 'cheating', 'murder', 'fraud', 'corruption', 'misconduct', 'negligence']
+        },
         
-        'blame': {'for': ['problem', 'accident', 'mistake', 'failure'],
-                  'on': ['person', 'thing', 'circumstance']},
+        'blame': {
+            'for': ['problem', 'accident', 'mistake', 'failure', 'delay', 'loss', 'damage'],
+            'on': ['person', 'thing', 'circumstance', 'system', 'weather', 'technology']
+        },
         
-        'congratulate': {'on': ['success', 'achievement', 'birthday', 'promotion']},
+        'congratulate': {
+            'on': ['success', 'achievement', 'birthday', 'promotion', 'graduation', 'award', 'accomplishment']
+        },
         
-        'succeed': {'in': ['exam', 'test', 'business', 'endeavor']},
+        'succeed': {
+            'in': ['exam', 'test', 'business', 'endeavor', 'project', 'mission', 'attempt', 'competition']
+        },
         
-        'invest': {'in': ['stock', 'property', 'business', 'education']},
+        'invest': {
+            'in': ['stock', 'property', 'business', 'education', 'technology', 'research', 'development', 'infrastructure']
+        },
         
-        'specialize': {'in': ['field', 'subject', 'area', 'topic']},
+        'specialize': {
+            'in': ['field', 'subject', 'area', 'topic', 'discipline', 'sector', 'industry', 'technology']
+        },
+        
+        # NEW VERBS ADDED
+        'apply': {
+            'for': ['job', 'position', 'grant', 'loan', 'visa', 'permission', 'scholarship', 'program'],
+            'to': ['university', 'college', 'company', 'institution', 'authority']
+        },
+        
+        'consist': {
+            'of': ['elements', 'components', 'parts', 'ingredients', 'materials', 'factors']
+        },
+        
+        'contribute': {
+            'to': ['project', 'discussion', 'charity', 'research', 'development', 'community', 'society']
+        },
+        
+        'deal': {
+            'with': ['problem', 'situation', 'issue', 'challenge', 'crisis', 'customer', 'complaint']
+        },
+        
+        'focus': {
+            'on': ['task', 'goal', 'objective', 'problem', 'solution', 'details', 'essentials']
+        },
+        
+        'insist': {
+            'on': ['point', 'principle', 'quality', 'standard', 'procedure', 'method']
+        },
+        
+        'refer': {
+            'to': ['document', 'manual', 'source', 'expert', 'authority', 'previous case', 'example']
+        },
+        
+        'respond': {
+            'to': ['question', 'email', 'request', 'criticism', 'situation', 'emergency', 'invitation']
+        },
+        
+        'suffer': {
+            'from': ['disease', 'illness', 'pain', 'stress', 'anxiety', 'depression', 'allergy', 'condition']
+        },
+        
+        'translate': {
+            'into': ['language', 'action', 'reality', 'practice', 'results', 'benefits']
+        },
 
-        # Adjectives with prepositions
-        'interested': {'in': ['art', 'science', 'reading', 'technology', 'sports', 'music']},
+        # ADJECTIVES WITH PREPOSITIONS (Expanded)
+        'interested': {
+            'in': ['art', 'science', 'reading', 'technology', 'sports', 'music', 'history', 'politics', 'culture', 'travel']
+        },
         
-        'responsible': {'for': ['project', 'task', 'accident', 'team', 'work']},
+        'responsible': {
+            'for': ['project', 'task', 'accident', 'team', 'work', 'department', 'budget', 'decision', 'outcome']
+        },
         
-        'afraid': {'of': ['dark', 'snakes', 'heights', 'flying', 'failure']},
+        'afraid': {
+            'of': ['dark', 'snakes', 'heights', 'flying', 'failure', 'rejection', 'unknown', 'consequences']
+        },
         
-        'proud': {'of': ['achievement', 'success', 'child', 'work', 'country']},
+        'proud': {
+            'of': ['achievement', 'success', 'child', 'work', 'country', 'heritage', 'accomplishment', 'progress']
+        },
         
-        'capable': {'of': ['doing', 'solving', 'managing', 'learning', 'achieving']},
+        'capable': {
+            'of': ['doing', 'solving', 'managing', 'learning', 'achieving', 'handling', 'completing', 'leading']
+        },
         
-        'different': {'from': ['others', 'previous', 'original', 'what', 'expected']},
+        'different': {
+            'from': ['others', 'previous', 'original', 'what', 'expected', 'usual', 'standard', 'traditional']
+        },
         
-        'similar': {'to': ['this', 'that', 'other', 'mine', 'yours']},
+        'similar': {
+            'to': ['this', 'that', 'other', 'mine', 'yours', 'previous', 'original', 'standard']
+        },
         
-        'good': {'at': ['math', 'sports', 'drawing', 'cooking', 'languages'],
-                 'for': ['health', 'you', 'environment', 'society']},
+        'good': {
+            'at': ['math', 'sports', 'drawing', 'cooking', 'languages', 'communication', 'analysis', 'problem-solving'],
+            'for': ['health', 'you', 'environment', 'society', 'business', 'development', 'growth']
+        },
         
-        'bad': {'at': ['swimming', 'public speaking', 'math', 'sports'],
-                'for': ['health', 'you', 'environment']},
+        'bad': {
+            'at': ['swimming', 'public speaking', 'math', 'sports', 'remembering', 'organizing', 'multitasking'],
+            'for': ['health', 'you', 'environment', 'reputation', 'business', 'relationship']
+        },
         
-        'fond': {'of': ['music', 'chocolate', 'person', 'animals']},
+        'fond': {
+            'of': ['music', 'chocolate', 'person', 'animals', 'reading', 'travel', 'cooking', 'gardening']
+        },
         
-        'tired': {'of': ['waiting', 'excuses', 'work', 'routine']},
+        'tired': {
+            'of': ['waiting', 'excuses', 'work', 'routine', 'politics', 'conflict', 'delays', 'inefficiency']
+        },
         
-        'aware': {'of': ['situation', 'problem', 'risk', 'danger', 'fact']},
+        'aware': {
+            'of': ['situation', 'problem', 'risk', 'danger', 'fact', 'consequences', 'implications', 'opportunity']
+        },
         
-        'famous': {'for': ['work', 'talent', 'invention', 'discovery']},
+        'famous': {
+            'for': ['work', 'talent', 'invention', 'discovery', 'writing', 'acting', 'leadership', 'contributions']
+        },
         
-        'married': {'to': ['person', 'partner', 'spouse']},
+        'married': {
+            'to': ['person', 'partner', 'spouse', 'husband', 'wife']
+        },
         
-        'allergic': {'to': ['peanuts', 'pollen', 'dust', 'cats']}
+        'allergic': {
+            'to': ['peanuts', 'pollen', 'dust', 'cats', 'dogs', 'medication', 'shellfish', 'dairy']
+        },
+        
+        # NEW ADJECTIVES ADDED
+        'addicted': {
+            'to': ['drugs', 'alcohol', 'gambling', 'shopping', 'social media', 'video games', 'sugar']
+        },
+        
+        'angry': {
+            'about': ['situation', 'decision', 'outcome', 'behavior', 'treatment'],
+            'with': ['person', 'colleague', 'friend', 'family', 'authority']
+        },
+        
+        'anxious': {
+            'about': ['future', 'results', 'performance', 'health', 'safety', 'finances']
+        },
+        
+        'committed': {
+            'to': ['goal', 'project', 'relationship', 'cause', 'principle', 'excellence', 'success']
+        },
+        
+        'compatible': {
+            'with': ['system', 'software', 'device', 'person', 'partner', 'team', 'philosophy']
+        },
+        
+        'concerned': {
+            'about': ['health', 'safety', 'future', 'environment', 'economy', 'education', 'politics']
+        },
+        
+        'connected': {
+            'to': ['internet', 'network', 'system', 'person', 'community', 'organization']
+        },
+        
+        'dependent': {
+            'on': ['parents', 'technology', 'medication', 'support', 'income', 'resources']
+        },
+        
+        'engaged': {
+            'in': ['activity', 'conversation', 'project', 'research', 'discussion', 'learning']
+        },
+        
+        'excited': {
+            'about': ['trip', 'opportunity', 'news', 'event', 'future', 'possibilities']
+        },
+        
+        'familiar': {
+            'with': ['topic', 'subject', 'area', 'procedure', 'system', 'technology', 'concept']
+        },
+        
+        'full': {
+            'of': ['energy', 'ideas', 'potential', 'surprises', 'opportunities', 'challenges']
+        },
+        
+        'guilty': {
+            'of': ['crime', 'offense', 'mistake', 'negligence', 'wrongdoing', 'violation']
+        },
+        
+        'happy': {
+            'about': ['news', 'result', 'decision', 'outcome', 'achievement', 'progress']
+        },
+        
+        'known': {
+            'for': ['expertise', 'work', 'contributions', 'talent', 'innovation', 'discoveries']
+        },
+        
+        'opposed': {
+            'to': ['idea', 'plan', 'proposal', 'change', 'policy', 'decision', 'action']
+        },
+        
+        'pleased': {
+            'with': ['results', 'performance', 'progress', 'work', 'service', 'outcome']
+        },
+        
+        'prepared': {
+            'for': ['exam', 'interview', 'emergency', 'challenge', 'opportunity', 'change']
+        },
+        
+        'satisfied': {
+            'with': ['service', 'results', 'performance', 'quality', 'progress', 'outcome']
+        },
+        
+        'suspicious': {
+            'of': ['person', 'behavior', 'activity', 'intentions', 'motives', 'situation']
+        },
+        
+        'typical': {
+            'of': ['behavior', 'pattern', 'response', 'situation', 'climate', 'region']
+        }
     })
 
     # ============================================================

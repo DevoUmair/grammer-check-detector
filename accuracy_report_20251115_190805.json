@@ -1,0 +1,347 @@
+{
+  "timestamp": "2025-11-15T19:08:05.741630",
+  "summary": {
+    "total_tests": 20,
+    "passed_tests": 12,
+    "failed_tests": 8,
+    "accuracy": 60.0
+  },
+  "detailed_results": [
+    {
+      "test_number": 1,
+      "description": "Article: \"an\" before consonant",
+      "input": "She has an dog.",
+      "expected_output": "She has a dog.",
+      "actual_output": "She has a dog .",
+      "expected_errors": [
+        "article",
+        "an",
+        "dog"
+      ],
+      "actual_errors": [
+        "Incorrect article 'an' before 'dog'"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 2,
+      "description": "Article: \"a\" before vowel sound",
+      "input": "He ate a apple.",
+      "expected_output": "He ate an apple.",
+      "actual_output": "He ates an apple .",
+      "expected_errors": [
+        "article",
+        "a",
+        "apple"
+      ],
+      "actual_errors": [
+        "Incorrect article 'a' before 'apple'",
+        "Possible agreement error: subject 'He' may require 3rd-person singular verb form at 'ate'"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 3,
+      "description": "Article: unnecessary \"the\" with school",
+      "input": "Children go to the school.",
+      "expected_output": "Children go to school.",
+      "actual_output": "Children go to the school .",
+      "expected_errors": [
+        "unnecessary",
+        "article",
+        "school"
+      ],
+      "actual_errors": [
+        "Unusual collocation: 'go to the'"
+      ],
+      "status": "FAIL",
+      "issues": [
+        "Missing error keyword: 'unnecessary'"
+      ]
+    },
+    {
+      "test_number": 4,
+      "description": "Article: unnecessary \"the\" with work",
+      "input": "She drives to the work.",
+      "expected_output": "She drives to work.",
+      "actual_output": "She drives to the work .",
+      "expected_errors": [
+        "unnecessary",
+        "article",
+        "work"
+      ],
+      "actual_errors": [],
+      "status": "FAIL",
+      "issues": [
+        "Failed to detect expected errors"
+      ]
+    },
+    {
+      "test_number": 5,
+      "description": "Preposition: \"good in\" instead of \"good at\"",
+      "input": "She is good in mathematics.",
+      "expected_output": "She is good at mathematics.",
+      "actual_output": "She is good at mathematics .",
+      "expected_errors": [
+        "preposition",
+        "good",
+        "mathematics"
+      ],
+      "actual_errors": [
+        "Unexpected preposition 'in' after 'good'; expected: at, for"
+      ],
+      "status": "FAIL",
+      "issues": [
+        "Missing error keyword: 'mathematics'"
+      ]
+    },
+    {
+      "test_number": 6,
+      "description": "Preposition: \"arrived to\" instead of \"arrived at\"",
+      "input": "He arrived to the station.",
+      "expected_output": "He arrived at the station.",
+      "actual_output": "He arrived at the station .",
+      "expected_errors": [
+        "preposition",
+        "arrived",
+        "station"
+      ],
+      "actual_errors": [
+        "Unexpected preposition 'to' after 'arrived'; expected: at, in, on"
+      ],
+      "status": "FAIL",
+      "issues": [
+        "Missing error keyword: 'station'"
+      ]
+    },
+    {
+      "test_number": 7,
+      "description": "Preposition: missing \"to\" after listen",
+      "input": "We listened music.",
+      "expected_output": "We listened to music.",
+      "actual_output": "We listened to music .",
+      "expected_errors": [
+        "missing preposition",
+        "listened"
+      ],
+      "actual_errors": [
+        "Possible missing preposition after 'listened'"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 8,
+      "description": "Preposition: \"depend of\" instead of \"depend on\"",
+      "input": "It depends of the weather.",
+      "expected_output": "It depends on the weather.",
+      "actual_output": "It depends on the weather .",
+      "expected_errors": [
+        "preposition",
+        "depends",
+        "weather"
+      ],
+      "actual_errors": [
+        "Unexpected preposition 'of' after 'depends'; expected: upon, on"
+      ],
+      "status": "FAIL",
+      "issues": [
+        "Missing error keyword: 'weather'"
+      ]
+    },
+    {
+      "test_number": 9,
+      "description": "Confusion: Their/They're",
+      "input": "Their going to the party.",
+      "expected_output": "They're going to the party.",
+      "actual_output": "there going to the party .",
+      "expected_errors": [
+        "confusion",
+        "Their",
+        "they're"
+      ],
+      "actual_errors": [
+        "Possible confusion: 'Their'. Alternatives: there, they're"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 10,
+      "description": "Confusion: Your/You're",
+      "input": "Your going to love this.",
+      "expected_output": "You're going to love this.",
+      "actual_output": "you're going to love this .",
+      "expected_errors": [
+        "confusion",
+        "Your",
+        "you're"
+      ],
+      "actual_errors": [
+        "Possible confusion: 'Your'. Alternatives: you're"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 11,
+      "description": "Confusion: Its/It's",
+      "input": "The dog wagged it's tail.",
+      "expected_output": "The dog wagged its tail.",
+      "actual_output": "The dog wagged it 'ed tail .",
+      "expected_errors": [
+        "confusion",
+        "it's",
+        "its"
+      ],
+      "actual_errors": [
+        "Possible tense inconsistency: verb ''s' looks present while sentence contains past verbs/markers"
+      ],
+      "status": "FAIL",
+      "issues": [
+        "Missing error keyword: 'confusion'",
+        "Correction differs significantly (diff: 3 words)"
+      ]
+    },
+    {
+      "test_number": 12,
+      "description": "Confusion: Then/Than",
+      "input": "She is taller then him.",
+      "expected_output": "She is taller than him.",
+      "actual_output": "She is taller than him .",
+      "expected_errors": [
+        "confusion",
+        "then",
+        "than"
+      ],
+      "actual_errors": [
+        "Possible confusion: 'then'. Alternatives: than"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 13,
+      "description": "Tense: present in past narrative",
+      "input": "He was walking when he sees the dog.",
+      "expected_output": "He was walking when he saw the dog.",
+      "actual_output": "He was walking when he saw the dog .",
+      "expected_errors": [
+        "tense",
+        "inconsistency",
+        "sees"
+      ],
+      "actual_errors": [
+        "Possible tense inconsistency: verb 'sees' looks present while sentence contains past verbs/markers"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 14,
+      "description": "Tense: mixed tenses",
+      "input": "She studied hard and gets good grades.",
+      "expected_output": "She studied hard and got good grades.",
+      "actual_output": "She studied hard and got good at graded .",
+      "expected_errors": [
+        "tense",
+        "inconsistency",
+        "gets"
+      ],
+      "actual_errors": [
+        "Possible missing preposition after 'good'",
+        "Possible tense inconsistency: verb 'gets' looks present while sentence contains past verbs/markers",
+        "Possible tense inconsistency: verb 'grades' looks present while sentence contains past verbs/markers"
+      ],
+      "status": "FAIL",
+      "issues": [
+        "Correction differs significantly (diff: 3 words)"
+      ]
+    },
+    {
+      "test_number": 15,
+      "description": "Agreement: third person singular",
+      "input": "He like football.",
+      "expected_output": "He likes football.",
+      "actual_output": "He likes football .",
+      "expected_errors": [
+        "agreement",
+        "He",
+        "like"
+      ],
+      "actual_errors": [
+        "Possible agreement error: subject 'He' may require 3rd-person singular verb form at 'like'"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 16,
+      "description": "Agreement: \"each\" with plural verb",
+      "input": "Each of the students have a book.",
+      "expected_output": "Each of the students has a book.",
+      "actual_output": "Each of the students has a book .",
+      "expected_errors": [
+        "agreement",
+        "Each",
+        "have"
+      ],
+      "actual_errors": [
+        "Agreement: 'Each' is singular; 'have' should be 'has'",
+        "Subject-verb agreement: 'Each' is singular; 'have' should be 'has'"
+      ],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 17,
+      "description": "Correct: simple present",
+      "input": "She goes to school.",
+      "expected_output": "She goes to school.",
+      "actual_output": "She goes to school .",
+      "expected_errors": [],
+      "actual_errors": [],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 18,
+      "description": "Correct: with articles",
+      "input": "I have a dog and an apple.",
+      "expected_output": "I have a dog and an apple.",
+      "actual_output": "I have a dog and an apple .",
+      "expected_errors": [],
+      "actual_errors": [],
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "test_number": 19,
+      "description": "Correct: with prepositions",
+      "input": "He is good at mathematics.",
+      "expected_output": "He is good at mathematics.",
+      "actual_output": "He is good at mathematics .",
+      "expected_errors": [],
+      "actual_errors": [
+        "Unusual collocation: 'good at mathematics'"
+      ],
+      "status": "FAIL",
+      "issues": [
+        "Falsely detected errors in correct sentence"
+      ]
+    },
+    {
+      "test_number": 20,
+      "description": "Correct: question format",
+      "input": "Where are you going?",
+      "expected_output": "Where are you going?",
+      "actual_output": "Where are you going ?",
+      "expected_errors": [],
+      "actual_errors": [],
+      "status": "PASS",
+      "issues": []
+    }
+  ]
+}
