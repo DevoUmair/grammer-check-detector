@@ -1,16 +1,14 @@
 from grammar_checker.core import GrammarChecker
 
 tests = [
-    "She adopted an dog from the shelter.",
-    "He visited a Eiffel Tower last summer.",
-    "She is good in mathematics.",
-    "He arrived to the office early.",
-    "He was walking to school when he sees a dog.",
-    "She studies all night and submitted the assignment this morning.",
-    "The list of items are on the table.",
-    "Each of the students have a laptop.",
-    "Their going to win the match."
+    "He walk to the market every day.",               # subject-verb agreement error
+    "I finished my work and he finish his later.",    # tense consistency error
+    "She place her keys on the desk.",                # incorrect verb form (simple grammar issue)
+    "We explored the old castle last weekend.",       # correct sentence (no error)
+    "There going to lose if they don’t practice.",    # confusion-set error (There → They’re)
+    "She is excellent in physics."                    # preposition error (in → at)
 ]
+
 
 checker = GrammarChecker()
 

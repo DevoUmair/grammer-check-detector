@@ -1,13 +1,14 @@
 from grammar_checker.core import GrammarChecker
 
 examples = [
-    "He go to school.",
-    "I went yesterday and he goes now.",
-    "She put the book on the table.",
-    "I visited the museum yesterday.",
-    "Their going to win the match.",
-    "He is the best in football."
+    "He walk to the market every day.",               # subject-verb agreement error
+    "I finished my work and he finish his later.",    # tense consistency error
+    "She place her keys on the desk.",                # incorrect verb form (simple grammar issue)
+    "We explored the old castle last weekend.",       # correct sentence (no error)
+    "There going to lose if they don’t practice.",    # confusion-set error (There → They’re)
+    "She is excellent in physics."                    # preposition error (in → at)
 ]
+
 
 checker = GrammarChecker()
 for s in examples:
