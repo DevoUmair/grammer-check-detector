@@ -47,6 +47,34 @@ class LinguisticKnowledge:
         'wherever', 'whoever', 'whatever'
     })
 
+    # Collective nouns (usually take singular verbs)
+    COLLECTIVE_NOUNS: set = field(default_factory=lambda: {
+        'team', 'group', 'family', 'class', 'committee', 'staff', 'crew',
+        'audience', 'board', 'government', 'company', 'organization',
+        'jury', 'crowd', 'public', 'army', 'navy', 'faculty', 'orchestra',
+        'band', 'gang', 'flock', 'herd', 'pack', 'swarm', 'school', 'pride'
+    })
+
+    # Academic subjects (usually take singular verbs)  
+    ACADEMIC_SUBJECTS: set = field(default_factory=lambda: {
+        'mathematics', 'math', 'physics', 'economics', 'statistics',
+        'linguistics', 'electronics', 'ethics', 'politics', 'acoustics',
+        'aesthetics', 'athletics', 'gymnastics', 'measles', 'mumps',
+        'news', 'series', 'species'
+    })
+
+    # Indefinite pronouns (singular)
+    INDEFINITE_SINGULAR: set = field(default_factory=lambda: {
+        'everyone', 'everybody', 'everything', 'someone', 'somebody',
+        'something', 'anyone', 'anybody', 'anything', 'no one', 'nobody',
+        'nothing', 'each', 'either', 'neither', 'one', 'another'
+    })
+
+    # Indefinite pronouns (plural)  
+    INDEFINITE_PLURAL: set = field(default_factory=lambda: {
+        'both', 'few', 'many', 'several', 'others'
+    })
+
     # Irregular verb forms for better tense detection
     IRREGULAR_PAST_VERBS: set = field(default_factory=lambda: {
         'was', 'were', 'had', 'did', 'went', 'saw', 'came', 'told', 'said',

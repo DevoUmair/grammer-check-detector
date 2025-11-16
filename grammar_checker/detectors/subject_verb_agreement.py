@@ -122,27 +122,20 @@ class SubjectVerbAgreementDetector:
             return False
         
         # Special indefinite pronouns (always singular)
-        indefinite_singular = {
-            'everyone', 'everybody', 'everything', 'someone', 'somebody', 
-            'something', 'anyone', 'anybody', 'anything', 'no one', 'nobody',
-            'nothing', 'each', 'either', 'neither'
-        }
+        indefinite_singular = self.knowledge.INDEFINITE_SINGULAR
+        
         if subject_text in indefinite_singular:
             return True
         
         # Collective nouns (usually singular in American English)
-        collective_nouns = {
-            'team', 'group', 'family', 'class', 'committee', 'jury', 'staff',
-            'government', 'company', 'organization', 'audience', 'band'
-        }
+        collective_nouns = self.knowledge.COLLECTIVE_NOUNS
+
         if subject_text in collective_nouns:
             return True
         
         # Academic subjects (singular)
-        academic_singular = {
-            'mathematics', 'math', 'physics', 'economics', 'news', 'politics',
-            'ethics', 'linguistics', 'statistics'
-        }
+        academic_singular = self.knowledge.ACADEMIC_SUBJECTS
+
         if subject_text in academic_singular:
             return True
         

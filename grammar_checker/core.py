@@ -12,9 +12,9 @@ class GrammarChecker:
         self.article_detector = ArticleDetector()
         # self.confusion_detector = ConfusionSetDetector()
         self.preposition_detector = PrepositionDetector()
-        # self.subject_verb_detector = SubjectVerbAgreementDetector() #present in tense consistency
+        self.subject_verb_detector = SubjectVerbAgreementDetector() #present in tense consistency
         self.tense_detector = TenseConsistencyDetector()
-        # self.helping_verb_detector = HelpingVerbDetector() #present in tense consistency
+        self.helping_verb_detector = HelpingVerbDetector() #present in tense consistency
 
     def check(self, sentence: str):
         """Check grammar of a sentence."""
@@ -25,9 +25,9 @@ class GrammarChecker:
         errors.extend(self.article_detector.detect(context))
         # errors.extend(self.confusion_detector.detect(context))
         errors.extend(self.preposition_detector.detect(context))
-        # errors.extend(self.subject_verb_detector.detect(context))
+        errors.extend(self.subject_verb_detector.detect(context))
         errors.extend(self.tense_detector.detect(context))
-        # errors.extend(self.helping_verb_detector.detect(context))
+        errors.extend(self.helping_verb_detector.detect(context))
 
         # Apply suggestions
         suggestions = [e.get('suggestion') for e in errors if e.get('suggestion')]
