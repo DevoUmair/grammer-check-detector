@@ -1,4 +1,3 @@
-# tense_consistency.py
 from grammar_checker.knowledge import LinguisticKnowledge
 import lemminflect
 import spacy
@@ -6,11 +5,9 @@ import spacy
 class TenseConsistencyDetector:
     def __init__(self):
         self.knowledge = LinguisticKnowledge()
-        # Load a small spaCy model for tokenization and POS tagging
         try:
             self.nlp = spacy.load("en_core_web_sm")
         except OSError:
-            # Fallback if model not available
             self.nlp = None
 
     def detect(self, sentence_or_context):
@@ -27,25 +24,20 @@ class TenseConsistencyDetector:
         """Analyze tense consistency and return detected tense errors."""
         if not tokens:
             return []
-        
-        # Convert string tokens to proper spaCy tokens if needed
+
         if tokens and isinstance(tokens[0], str):
-            # Re-parse the sentence to get proper tokens
             sentence_text = doc.text if hasattr(doc, 'text') else ' '.join(tokens)
             if self.nlp:
                 doc = self.nlp(sentence_text)
                 tokens = list(doc)
             else:
-                # Fallback: create simple token-like objects
                 tokens = self._create_simple_tokens(tokens)
         
         detected_tense = self._detect_sentence_tense(doc, tokens)
-        
-        # Detect tense errors and SVA errors
+
         tense_errors = self._detect_tense_errors(doc, detected_tense, tokens)
         sva_errors = self._detect_sva_errors(doc, detected_tense)
-        
-        # Always return the detected tense as information
+
         tense_info = {
             'type': 'tense_info',
             'message': f'Detected tense: {detected_tense}',
@@ -70,19 +62,15 @@ class TenseConsistencyDetector:
                 """Simple POS guessing based on common patterns."""
                 text_lower = text.lower()
                 
-                # Common auxiliaries
                 if text_lower in ['is', 'am', 'are', 'was', 'were', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'shall', 'would', 'could', 'should', 'may', 'might', 'must']:
                     return 'AUX'
                 
-                # Common verbs
                 if text_lower in ['go', 'come', 'see', 'look', 'make', 'take', 'give', 'get', 'say', 'know', 'think', 'feel', 'want', 'need', 'like', 'love', 'hate', 'work', 'play', 'read', 'write', 'run', 'walk', 'talk', 'speak', 'listen', 'eat', 'drink', 'sleep', 'live', 'study', 'learn']:
                     return 'VERB'
-                
-                # Common nouns
+
                 if text_lower in ['i', 'you', 'he', 'she', 'it', 'we', 'they', 'this', 'that', 'these', 'those']:
                     return 'PRON'
                 
-                # Default to NOUN for unknown words
                 return 'NOUN'
         
         return [SimpleToken(token, i) for i, token in enumerate(token_strings)]
@@ -90,22 +78,18 @@ class TenseConsistencyDetector:
     def _detect_sentence_tense(self, doc, tokens):
         """Detect the tense of the sentence with robust logic."""
         sentence_text = doc.text if hasattr(doc, 'text') else ' '.join([t.text for t in tokens])
-        
-        # Check for tense conflicts first (e.g., future tense with past time marker)
+
         if self._has_tense_conflict(sentence_text):
             return self._resolve_tense_conflict(sentence_text)
-        
-        # Step 1: Check from tense markers first (most reliable)
+
         tense_from_markers = self._get_tense_from_time_markers_comprehensive(sentence_text)
         if tense_from_markers:
             return tense_from_markers
-        
-        # Step 2: Check for auxiliary verbs
+
         tense_from_aux = self._get_tense_from_auxiliaries_comprehensive(tokens)
         if tense_from_aux:
             return tense_from_aux
-        
-        # Step 3: Check main verbs
+
         tense_from_verbs = self._get_tense_from_verb_patterns_comprehensive(tokens)
         if tense_from_verbs:
             return tense_from_verbs
@@ -115,12 +99,10 @@ class TenseConsistencyDetector:
     def _has_tense_conflict(self, sentence_text):
         """Check if there's a conflict between tense markers and verb forms."""
         sentence_lower = sentence_text.lower()
-        
-        # Future auxiliary with past time marker
+
         if ('will' in sentence_lower or "'ll" in sentence_lower) and any(marker in sentence_lower for marker in self.knowledge.PAST_TENSE_MARKERS):
             return True
-        
-        # Past auxiliary with future time marker  
+ 
         if any(aux in sentence_lower for aux in ['was', 'were', 'had']) and any(marker in sentence_lower for marker in self.knowledge.FUTURE_TENSE_MARKERS):
             return True
         
@@ -129,12 +111,10 @@ class TenseConsistencyDetector:
     def _resolve_tense_conflict(self, sentence_text):
         """Resolve tense conflicts - time markers usually win over verb forms."""
         sentence_lower = sentence_text.lower()
-        
-        # If there are past time markers, use past tense
+
         if any(marker in sentence_lower for marker in self.knowledge.PAST_TENSE_MARKERS):
             return "simple_past"
-        
-        # If there are future time markers, use future tense
+
         if any(marker in sentence_lower for marker in self.knowledge.FUTURE_TENSE_MARKERS):
             return "simple_future"
         

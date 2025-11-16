@@ -1,13 +1,6 @@
 from grammar_checker.knowledge import LinguisticKnowledge
 
 class PrepositionDetector:
-    """
-    Balanced rule-based detector:
-      • Uses PREPOSITION_COLLOCATIONS
-      • Universal incorrect-preposition rules
-      • Time/location rules (days, months, night)
-    """
-
     def __init__(self):
         self.kb = LinguisticKnowledge()
 
@@ -87,9 +80,6 @@ class PrepositionDetector:
 
         return errors
 
-    # ------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------
 
     def _make_replace(self, index, prev, wrong, correct):
         return {

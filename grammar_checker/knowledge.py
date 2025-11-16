@@ -317,7 +317,6 @@ class LinguisticKnowledge:
         'currant': ['current'],
     })
 
-    # Preposition collocations
     PREPOSITION_COLLOCATIONS: dict = field(default_factory=lambda: {
         'go': {'to': ['school', 'work', 'bed', 'church', 'hospital']},
         'arrive': {'at': ['station', 'airport'], 'in': ['city', 'country']},
@@ -330,7 +329,6 @@ class LinguisticKnowledge:
         'agree': {'with': ['person'], 'to': ['plan']}
     })
 
-    # Helping verb errors
     HELPING_VERB_ERRORS: dict = field(default_factory=lambda: {
         'could of': 'could have',
         'would of': 'would have', 
@@ -338,7 +336,7 @@ class LinguisticKnowledge:
         'might of': 'might have',
         'must of': 'must have'
     })
-    # Context patterns for confusion words
+
     CONFUSION_CONTEXTS: dict = field(default_factory=lambda: {
         'their': {'possession': True, 'requires_noun': True},
         'there': {'location': True, 'often_before_verb': True},
@@ -403,4 +401,3 @@ class LinguisticKnowledge:
     })
 
     ACRONYM_VOWEL_SOUNDS: set = field(default_factory=lambda: set("AEFHI" ))
-    # A (ay), E (ee), F (ef), H (aitch), I (eye)

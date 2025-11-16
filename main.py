@@ -1,9 +1,7 @@
-#main.py
 import tkinter as tk
 import spacy
 from grammar_checker.core import GrammarChecker
 
-# Load spaCy model for POS tagging
 nlp = spacy.load("en_core_web_sm")
 
 def check_grammar():
@@ -19,7 +17,6 @@ def check_grammar():
         for e in errors:
             output_box.insert(tk.END, f"- {e.get('message')}\n")
 
-        # Add POS tagging for the corrected sentence
         output_box.insert(tk.END, "\n\nPart-of-Speech (POS) Tags:\n")
         doc = nlp(corrected)
         for token in doc:
@@ -27,7 +24,6 @@ def check_grammar():
     else:
         output_box.insert(tk.END, "No errors detected!\n")
 
-        # Still show POS tags even if no errors
         output_box.insert(tk.END, "\n\nPart-of-Speech (POS) Tags:\n")
         doc = nlp(text)
         for token in doc:

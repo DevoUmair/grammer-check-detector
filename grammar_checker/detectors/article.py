@@ -1,4 +1,3 @@
-# article.py
 from grammar_checker.knowledge import LinguisticKnowledge
 import re
 import spacy
@@ -6,11 +5,9 @@ import spacy
 class ArticleDetector:
     def __init__(self):
         self.knowledge = LinguisticKnowledge()
-        # Load spaCy model for better proper noun detection
         try:
             self.nlp = spacy.load("en_core_web_sm")
         except OSError:
-            # Fallback if spaCy model is not available
             self.nlp = None
 
     def detect(self, sentence_or_context):
@@ -23,14 +20,11 @@ class ArticleDetector:
             return self._detect_with_context(doc, tokens)
         return []
 
-    # ------------------------------------------------------------------
-
     def _detect_with_context(self, doc, tokens):
         """Detect article errors using context."""
         errors = []
 
         for i, token in enumerate(doc):
-            # Detect wrong article usage (a/an/the)
             if token.text.lower() in ['a', 'an', 'the'] and i + 1 < len(doc):
                 next_token = doc[i + 1]
                 errors.extend(self._check_article_usage(token, next_token, i))
@@ -43,8 +37,6 @@ class ArticleDetector:
 
         return errors
 
-    # ------------------------------------------------------------------
-
     def _check_article_usage(self, article_token, next_token, position):
         """Check article usage."""
         errors = []
@@ -55,9 +47,6 @@ class ArticleDetector:
         if next_token.pos_ == 'PUNCT':
             return errors
 
-        # ---------------------------------------
-        # A/AN RULES
-        # ---------------------------------------
         if article_text in ['a', 'an']:
             requires_an = self._requires_an(word)
 
@@ -75,9 +64,6 @@ class ArticleDetector:
                     'suggestion': {'type': 'replace', 'index': position, 'word': 'a'}
                 })
 
-        # ---------------------------------------
-        # THE RULES (zero-article situations)
-        # ---------------------------------------
         if article_text == 'the':
             if self._should_be_zero_article(next_token):
                 errors.append({
@@ -87,8 +73,6 @@ class ArticleDetector:
                 })
 
         return errors
-
-    # ------------------------------------------------------------------
 
     def _requires_an(self, word):
         """Improved detection of 'an' before vowel sounds."""
@@ -117,8 +101,6 @@ class ArticleDetector:
 
         # Standard vowel-sound rule
         return first[0] in "aeiou"
-
-    # ------------------------------------------------------------------
 
     def _should_be_zero_article(self, noun_token):
         """Check if noun should normally have no article."""
@@ -185,7 +167,6 @@ class ArticleDetector:
         
         return False
 
-    # ------------------------------------------------------------------
 
     def _detect_missing_articles(self, doc):
         """Detect missing articles before singular, countable nouns."""
@@ -342,11 +323,9 @@ class ArticleDetector:
         i = noun_index - 1
         while i >= 0:
             token = doc[i]
-            # Stop at punctuation or verbs
             if token.pos_ == "PUNCT" or token.pos_ in ["VERB", "AUX"]:
                 return False
             
-            # Check for determiners, possessives, quantifiers
             if (token.pos_ == "DET" or 
                 token.text.lower() in ["my", "your", "his", "her", "its", "our", "their"] or
                 token.text.lower() in ["this", "that", "these", "those", "some", "any", "each", "every", "no", "all"]):
@@ -363,17 +342,14 @@ class ArticleDetector:
         
         while i >= 0:
             token = doc[i]
-            # Stop at punctuation, verbs, or determiners
             if token.pos_ in ["PUNCT", "VERB", "AUX", "DET", "ADP"]:
                 break
-            # Include adjectives and nouns in the noun phrase
             if token.pos_ in ["ADJ", "NOUN"]:
                 start = i
             else:
                 break
             i -= 1
         
-        # Build the phrase text for the error message
         phrase_tokens = []
         for j in range(start, noun_index + 1):
             phrase_tokens.append(doc[j].text)
