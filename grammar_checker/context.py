@@ -1,46 +1,62 @@
 import spacy
+from grammar_checker.knowledge import LinguisticKnowledge
 
 class ContextAnalyzer:
+    """Context analyzer using spaCy and lemminflect."""
+    
     def __init__(self):
+        self.nlp = None
+        self.knowledge = LinguisticKnowledge()
+        
         try:
             self.nlp = spacy.load("en_core_web_sm")
-        except OSError:
-            raise Exception(
-                "SpaCy English model not found. Please install it using: "
-                "python -m spacy download en_core_web_sm"
-            )
+        except Exception as e:
+            print(f"Warning: spaCy model not available: {e}")
 
     def analyze(self, sentence: str):
+        """Analyze sentence context."""
+        if self.nlp is None:
+            return self._fallback_analysis(sentence)
+
         doc = self.nlp(sentence)
-        
-        subjects = [tok for tok in doc if "subj" in tok.dep_.lower()]
-        verbs = [tok for tok in doc if tok.pos_ == "VERB"]
-        objects = [tok for tok in doc if "obj" in tok.dep_.lower()]
-        
-        # Extract tense information
-        tense_info = self._extract_tense_info(doc)
         
         return {
             "doc": doc,
-            "tokens": [tok.text for tok in doc],
-            "pos": [tok.pos_ for tok in doc],
-            "lemmas": [tok.lemma_ for tok in doc],
-            "dep": [tok.dep_ for tok in doc],
-            "subjects": subjects,
-            "verbs": verbs,
-            "objects": objects,
-            "tense_info": tense_info,
-            "sentence_text": sentence
+            "tokens": [token.text for token in doc],
+            "lemmas": [token.lemma_ for token in doc],
+            "pos": [token.pos_ for token in doc],
+            "dep": [token.dep_ for token in doc],
+            "morph": [str(token.morph) for token in doc],
+            "subjects": [token for token in doc if "subj" in token.dep_],
+            "verbs": [token for token in doc if token.pos_ == "VERB"],
+            "objects": [token for token in doc if "obj" in token.dep_],
+            "proper_nouns": [token for token in doc if token.pos_ == "PROPN"],
+            "noun_phrases": [chunk.text for chunk in doc.noun_chunks]
         }
-    
-    def _extract_tense_info(self, doc):
-        tense_markers = []
-        for token in doc:
-            if token.tag_ in ['VBD', 'VBN']:  # Past tense
-                tense_markers.append(('past', token.text))
-            elif token.tag_ in ['VBZ', 'VBP']:  # Present tense
-                tense_markers.append(('present', token.text))
-            elif token.tag_ == 'VBG':  # Gerund/Continuous
-                tense_markers.append(('continuous', token.text))
-                
-        return tense_markers
+
+    def _fallback_analysis(self, sentence):
+        """Fallback when spaCy is unavailable."""
+        tokens = sentence.split()
+        return {
+            "doc": None,
+            "tokens": tokens,
+            "lemmas": tokens,
+            "pos": [],
+            "dep": [],
+            "morph": [],
+            "subjects": [],
+            "verbs": [],
+            "objects": [],
+            "proper_nouns": [token for token in tokens if token and token[0].isupper()],
+            "noun_phrases": []
+        }
+
+    def get_verb_inflection(self, base_verb, form='VBD'):
+        """Get verb inflection using lemminflect."""
+        try:
+            import lemminflect
+            inflections = lemminflect.getInflection(base_verb, form)
+            return inflections[0] if inflections else None
+        except Exception as e:
+            print(f"Lemminflect error for '{base_verb}': {e}")
+            return None
