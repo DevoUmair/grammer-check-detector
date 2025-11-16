@@ -1,120 +1,117 @@
-#preposition.py
 from grammar_checker.knowledge import LinguisticKnowledge
 
 class PrepositionDetector:
+    """
+    Balanced rule-based detector:
+      • Uses PREPOSITION_COLLOCATIONS
+      • Universal incorrect-preposition rules
+      • Time/location rules (days, months, night)
+    """
+
     def __init__(self):
-        self.knowledge = LinguisticKnowledge()
+        self.kb = LinguisticKnowledge()
 
-    def detect(self, sentence_or_context):
-        if isinstance(sentence_or_context, dict):
-            tokens = sentence_or_context.get('tokens', [])
-        else:
-            tokens = sentence_or_context or []
+        # Universal replacement rules
+        self.UNIVERSAL_RULES = {
+            ('discuss', 'about'): None,
+            ('married', 'with'): 'to',
+            ('different', 'than'): 'from',
+            ('prefer', 'than'): 'to',
+            ('capable', 'for'): 'of',
+            ('responsible', 'of'): 'for',
+            ('angry', 'on'): 'with',
+            ('good', 'in'): 'at',
+            ('interested', 'on'): 'in',
+            ('depend', 'of'): 'on',
+            ('believe', 'on'): 'in',
+        }
 
+        # Days & months
+        self.DAYS = {"monday","tuesday","wednesday","thursday","friday","saturday","sunday"}
+        self.MONTHS = {
+            "january","february","march","april","may","june",
+            "july","august","september","october","november","december"
+        }
+
+    def detect(self, context):
+        tokens = context.get("tokens", [])
+        pos = context.get("pos", [])
         errors = []
-        # common prepositions to detect existing (possibly incorrect) prepositions
-        common_preps = {'in', 'on', 'at', 'to', 'for', 'of', 'with', 'about', 'by', 'from', 'into', 'onto', 'over', 'under', 'between', 'among', 'through', 'during'}
 
-        for i, word in enumerate(tokens):
-            lw = word.lower()
-            # allow matching base verb forms: e.g., 'arrived' -> 'arrive'
-            verb_key = None
-            if lw in self.knowledge.PREPOSITION_COLLOCATIONS:
-                verb_key = lw
-            else:
-                # handle past tense forms: try removing 'ed' or just 'd' (arrived -> arrive)
-                if lw.endswith('ed'):
-                    cand = lw[:-2]
-                    cand2 = lw[:-1]
-                    if cand in self.knowledge.PREPOSITION_COLLOCATIONS:
-                        verb_key = cand
-                    elif cand2 in self.knowledge.PREPOSITION_COLLOCATIONS:
-                        verb_key = cand2
-                # handle 3rd-person singular: try both -s and -es removals
-                elif lw.endswith('s'):
-                    cand = lw[:-1]
-                    cand2 = lw[:-2]
-                    if cand in self.knowledge.PREPOSITION_COLLOCATIONS:
-                        verb_key = cand
-                    elif cand2 in self.knowledge.PREPOSITION_COLLOCATIONS:
-                        verb_key = cand2
+        for i, tok in enumerate(tokens):
+            low = tok.lower()
 
-            if not verb_key:
-                continue
+            # 1 — UNIVERSAL RULES
+            if i > 0:
+                prev = tokens[i-1].lower()
+                key = (prev, low)
+                if key in self.UNIVERSAL_RULES:
+                    correct = self.UNIVERSAL_RULES[key]
+                    if correct is None:
+                        errors.append(self._make_remove(i, prev, low))
+                    else:
+                        errors.append(self._make_replace(i, prev, low, correct))
 
-            prep_dict = self.knowledge.PREPOSITION_COLLOCATIONS[verb_key]
-            allowed_preps = set(prep_dict.keys())
+            # 2 — COLLOCATION RULES
+            if i > 0:
+                prev = tokens[i-1].lower()
+                if prev in self.kb.PREPOSITION_COLLOCATIONS:
+                    valid_map = self.kb.PREPOSITION_COLLOCATIONS[prev]
 
-            # look ahead for a preposition token within next 3 tokens
-            found_prep = None
-            found_prep_index = None
-            for j in range(i + 1, min(i + 4, len(tokens))):
-                candidate = tokens[j].lower()
-                if candidate in common_preps:
-                    found_prep = candidate
-                    found_prep_index = j
-                    break
+                    # If current preposition is correct, skip
+                    if low in valid_map:
+                        pass
+                    else:
+                        # Check if following noun requires a specific prep
+                        for expected_prep, nouns in valid_map.items():
+                            if i+1 < len(tokens) and tokens[i+1].lower() in nouns:
+                                errors.append(
+                                    self._make_replace(i, prev, low, expected_prep)
+                                )
 
-            if found_prep:
-                if found_prep not in allowed_preps:
-                    # wrong preposition used; try to pick the allowed preposition
-                    # that best fits the noun (if available)
-                    noun_index = found_prep_index + 1
-                    preferred = None
-                    if noun_index < len(tokens):
-                        noun = tokens[noun_index].lower()
-                        # try exact match or substring match against allowed nouns
-                        for p, nouns in prep_dict.items():
-                            if isinstance(nouns, list):
-                                for an in nouns:
-                                    if noun == an or an in noun or noun in an:
-                                        preferred = p
-                                        break
-                            if preferred:
-                                break
+            # 3 — TIME / LOCATION RULES
+            if low in {"in", "on", "at"} and i+1 < len(tokens):
+                nxt = tokens[i+1].lower()
 
-                        if preferred:
-                            likely_prep = preferred
-                        else:
-                            if 'at' in allowed_preps:
-                                likely_prep = 'at'
-                            else:
-                                likely_prep = next(iter(allowed_preps)) if allowed_preps else None
-                    sugg = None
-                    if likely_prep:
-                        sugg = {'type': 'replace', 'index': found_prep_index, 'word': likely_prep}
-                    errors.append({
-                        'pos': found_prep_index,
-                        'message': f"Unexpected preposition '{tokens[found_prep_index]}' after '{word}'; expected: {', '.join(allowed_preps)}",
-                        'suggestion': sugg
-                    })
-                else:
-                    # correct preposition found: validate noun collocation if a list exists
-                    noun_index = found_prep_index + 1
-                    if noun_index < len(tokens):
-                        noun = tokens[noun_index].lower()
-                        allowed_nouns = prep_dict.get(found_prep)
-                        if isinstance(allowed_nouns, list) and allowed_nouns and noun not in allowed_nouns:
-                            # try to find an alternative preposition that fits this noun
-                            replacement_prep = None
-                            for p, nouns in prep_dict.items():
-                                if isinstance(nouns, list) and noun in nouns:
-                                    replacement_prep = p
-                                    break
-                            sugg = None
-                            if replacement_prep:
-                                sugg = {'type': 'replace', 'index': found_prep_index, 'word': replacement_prep}
-                            errors.append({
-                                'pos': noun_index,
-                                'message': f"Unusual collocation: '{lw} {found_prep} {tokens[noun_index]}'",
-                                'suggestion': sugg
-                            })
-            else:
-                # no preposition found in lookahead: suggest inserting the most likely preposition (first key)
-                likely_prep = next(iter(prep_dict.keys()))
-                errors.append({
-                    'pos': i,
-                    'message': f"Possible missing preposition after '{word}'",
-                    'suggestion': {'type': 'insert', 'index': i+1, 'word': likely_prep}
-                })
+                # Days → on
+                if nxt in self.DAYS and low != "on":
+                    errors.append(self._make_replace(i, low, nxt, "on"))
+
+                # Months → in
+                if nxt in self.MONTHS and low != "in":
+                    errors.append(self._make_replace(i, low, nxt, "in"))
+
+                # Night → at
+                if nxt == "night" and low != "at":
+                    errors.append(self._make_replace(i, low, nxt, "at"))
+
         return errors
+
+    # ------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------
+
+    def _make_replace(self, index, prev, wrong, correct):
+        return {
+            "type": "replace",
+            "index": index,
+            "word": correct,
+            "message": f"Preposition '{wrong}' is incorrect after '{prev}'. Use '{correct}'.",
+            "suggestion": {
+                "type": "replace",
+                "index": index,
+                "word": correct
+            }
+        }
+
+    def _make_remove(self, index, prev, wrong):
+        return {
+            "type": "remove",
+            "index": index,
+            "word": wrong,
+            "message": f"Unnecessary preposition '{wrong}' after '{prev}'.",
+            "suggestion": {
+                "type": "remove",
+                "index": index
+            }
+        }

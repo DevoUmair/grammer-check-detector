@@ -4,6 +4,7 @@ from grammar_checker.detectors.confusion_set import ConfusionSetDetector
 from grammar_checker.detectors.preposition import PrepositionDetector
 from grammar_checker.detectors.subject_verb_agreement import SubjectVerbAgreementDetector
 from grammar_checker.detectors.tense_consistency import TenseConsistencyDetector
+from grammar_checker.detectors.helping_verb import HelpingVerbDetector
 
 class GrammarChecker:
     def __init__(self):
@@ -13,20 +14,22 @@ class GrammarChecker:
         self.preposition_detector = PrepositionDetector()
         self.subject_verb_detector = SubjectVerbAgreementDetector()
         self.tense_detector = TenseConsistencyDetector()
+        self.helping_verb_detector = HelpingVerbDetector()
 
     def check(self, sentence: str):
+        """Check grammar of a sentence."""
         context = self.context_analyzer.analyze(sentence)
 
-        # Collect structured error objects from detectors. Each error is a dict:
-        # {"pos": int, "message": str, "suggestion": {"type":..., ...} | None}
+        # Collect errors from all detectors
         errors = []
         errors.extend(self.article_detector.detect(context))
         errors.extend(self.confusion_detector.detect(context))
         errors.extend(self.preposition_detector.detect(context))
         errors.extend(self.subject_verb_detector.detect(context))
         errors.extend(self.tense_detector.detect(context))
+        errors.extend(self.helping_verb_detector.detect(context))
 
-        # Collect suggestions and apply them to produce a corrected sentence.
+        # Apply suggestions
         suggestions = [e.get('suggestion') for e in errors if e.get('suggestion')]
         corrected_tokens = self._apply_suggestions(context.get('tokens', []), suggestions)
         corrected_sentence = ' '.join(corrected_tokens)
@@ -38,35 +41,41 @@ class GrammarChecker:
         }
 
     def _apply_suggestions(self, tokens, suggestions):
-        """Apply simple suggestions to a token list and return a new token list.
-
-        Suggestions are applied in the order provided. Supported suggestion types:
-        - replace: {'type':'replace','index':i,'word':new_word}
-        - remove: {'type':'remove','index':i}
-        - insert: {'type':'insert','index':i,'word':new_word} (insert before index)
-        """
+        """Apply suggestions to token list and fix punctuation spacing."""
         if not suggestions:
-            return list(tokens)
+            return self._fix_punctuation_spacing(tokens)
 
         tokens_out = list(tokens)
         offset = 0
-        # Apply in order of ascending index to keep behavior predictable
-        def keyfn(s):
-            return (s.get('index', 0), 0 if s.get('type') == 'remove' else 1)
-
-        for s in sorted(suggestions, key=keyfn):
+        
+        for s in sorted(suggestions, key=lambda x: x.get('index', 0)):
             typ = s.get('type')
             idx = s.get('index', 0) + offset
-            if typ == 'replace':
-                if 0 <= idx < len(tokens_out):
-                    tokens_out[idx] = s.get('word', tokens_out[idx])
-            elif typ == 'remove':
-                if 0 <= idx < len(tokens_out):
-                    tokens_out.pop(idx)
-                    offset -= 1
-            elif typ == 'insert':
-                if 0 <= idx <= len(tokens_out):
-                    tokens_out.insert(idx, s.get('word'))
-                    offset += 1
+            
+            if typ == 'replace' and 0 <= idx < len(tokens_out):
+                tokens_out[idx] = s.get('word', tokens_out[idx])
+            elif typ == 'remove' and 0 <= idx < len(tokens_out):
+                tokens_out.pop(idx)
+                offset -= 1
+            elif typ == 'insert' and 0 <= idx <= len(tokens_out):
+                tokens_out.insert(idx, s.get('word'))
+                offset += 1
 
-        return tokens_out
+        return self._fix_punctuation_spacing(tokens_out)
+
+    def _fix_punctuation_spacing(self, tokens):
+        """Remove spaces before punctuation."""
+        if not tokens:
+            return tokens
+        
+        punctuation = {'.', ',', '!', '?', ';', ':', "'", '"'}
+        result = []
+        
+        for i, token in enumerate(tokens):
+            if token in punctuation and result:
+                # Attach punctuation to previous token
+                result[-1] = result[-1] + token
+            else:
+                result.append(token)
+        
+        return result
