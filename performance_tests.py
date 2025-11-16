@@ -276,6 +276,7 @@ class GrammarFixerDemo:
             print("✅ Good performance - suitable for interactive use")
         else:
             print("⚠️  Performance could be improved")
+            
     # def test_specific_categories(self):
     #     """Test specific grammar categories."""
     #     print("\n" + "=" * 70)
