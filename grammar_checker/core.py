@@ -10,7 +10,7 @@ class GrammarChecker:
     def __init__(self):
         self.context_analyzer = ContextAnalyzer()
         self.article_detector = ArticleDetector()
-        self.confusion_detector = ConfusionSetDetector()
+        # self.confusion_detector = ConfusionSetDetector()
         self.preposition_detector = PrepositionDetector()
         self.subject_verb_detector = SubjectVerbAgreementDetector()
         self.tense_detector = TenseConsistencyDetector()
@@ -23,7 +23,7 @@ class GrammarChecker:
         # Collect errors from all detectors
         errors = []
         errors.extend(self.article_detector.detect(context))
-        errors.extend(self.confusion_detector.detect(context))
+        # errors.extend(self.confusion_detector.detect(context))
         errors.extend(self.preposition_detector.detect(context))
         errors.extend(self.subject_verb_detector.detect(context))
         errors.extend(self.tense_detector.detect(context))
